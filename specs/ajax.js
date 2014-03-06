@@ -16,16 +16,18 @@ describe("Ajax", function(){
     
     User.fetch({test: "ok"}, { o: true } );
 
-    User.bind("ajaxSuccess", function(response){ console.log(User.all()[0]) })
-    
+    User.one("ajaxSuccess", function(response){ 
+      expect(User.first().first).toBe("roberto");
+      server.restore();
+    })
     
     server.requests[0].respond(
-            200,
-            { "Content-Type": "application/json" },
-            JSON.stringify([{ first: "roberto", last: "Provide examples" }])
-        );
+        200,
+        { "Content-Type": "application/json" },
+        JSON.stringify([{ first: "roberto", last: "Provide examples" }])
+    );
 
-    server.restore()
+
 
   });
   
@@ -37,15 +39,17 @@ describe("Ajax", function(){
 
     User.fetch({id: "IDD"});
 
-    User.bind("ajaxSuccess", function(response){ console.log(response) })
+    User.one("ajaxSuccess", function(response){ 
+      server.restore()
+      expect(response.body.id).toBe("IDD");
+    });
     
-    server.requests[0].respond(
-        200,
-        { "Content-Type": "application/json" },
-        JSON.stringify( {first: "John", last: "Williams", id: "IDD"} )
+    server.requests[1].respond(
+      200,
+      { "Content-Type": "application/json" },
+      JSON.stringify( {first: "John", last: "Williams", id: "IDD"} )
     );
 
-    server.restore()
 
   });
 

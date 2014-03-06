@@ -50,7 +50,6 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
       if (options == null) {
         options = {};
       }
-      console.log(arguments);
       record = new this.model({
         id: id
       });
@@ -81,25 +80,25 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
       options.error = this.failResponse;
       if (id = params.id) {
         delete params.id;
-        return this.find(id, params, options).end((function(_this) {
+        this.find(id, params, options).end((function(_this) {
           return function(err, res) {
-            console.log(err);
             _this.model.refresh(res.body, options);
             return _this.recordsResponse(res);
           };
         })(this));
+        return true;
       } else {
-        return this.all(params, options).end((function(_this) {
+        this.all(params, options).end((function(_this) {
           return function(res) {
             _this.model.refresh(res.body, options);
             return _this.recordsResponse(res);
           };
         })(this));
+        return true;
       }
     };
 
     Collection.prototype.recordsResponse = function(data, status, xhr) {
-      console.log(this.model);
       return this.model.trigger('ajaxSuccess', data, status, xhr);
     };
 

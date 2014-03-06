@@ -24,7 +24,6 @@ class Collection
   constructor: (@model) ->
 
   find: (id, params, options = {}) ->
-    console.log(arguments)
     record = new @model(id: id)
     options.url = record.url if !options.url
     queueRequest.get(params, options)
@@ -40,16 +39,17 @@ class Collection
       @find(id, params, options).end (err, res) =>
         @model.refresh(res.body, options)
         @recordsResponse(res)
+      return true;
         
     else
       @all(params, options).end (res) =>
         @model.refresh(res.body, options)
         @recordsResponse(res);
+      return true
 
   # Private
 
   recordsResponse: (data, status, xhr) =>
-    console.log(@model)
     @model.trigger('ajaxSuccess', data, status, xhr)
 
   failResponse: (xhr, statusText, error) =>
