@@ -1,6 +1,6 @@
 ajax_request = require("./ajax_request")
 AjaxUtils = require("./ajax_utils")
-_3Model = require("_3Model")
+_3Model = require("3vot-model")
 
 class Singleton
   

@@ -44,14 +44,14 @@ module.exports = (grunt) ->
         src: ['lib/index.js']
         dest: 'dist/3model.js'
         options:
-          alias: ['./lib/index.js:_3Model']
+          alias: ['./lib/index.js:3vot-model']
        
       ajax: 
         src: ['lib/ajax.js']
         dest: 'dist/3ajax.js'
         options:
           alias: ["./lib/ajax.js:_3Ajax"]
-          external: ["_3Model"]
+          external: ["3vot-model"]
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-coffee');

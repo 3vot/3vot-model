@@ -229,7 +229,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 }).call(this);
 
-},{"./events":1,"./model":4,"./module":5}],"_3Model":[function(require,module,exports){
+},{"./events":1,"./model":4,"./module":5}],"3vot-model":[function(require,module,exports){
 module.exports=require('bRhrlU');
 },{}],4:[function(require,module,exports){
 (function() {

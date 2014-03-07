@@ -1,4 +1,4 @@
-_3Model = require("_3Model")
+_3Model = require("3vot-model")
 
 class AjaxUtils
 

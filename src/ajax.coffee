@@ -1,4 +1,4 @@
-_3Model  = require('_3Model')
+_3Model  = require('3vot-model')
 AjaxUtils = require("./ajax_utils")
 Collection = require("./ajax_collection")
 Singleton = require("./ajax_singleton")

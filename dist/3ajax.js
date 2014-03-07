@@ -3,7 +3,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   var Ajax, AjaxUtils, Collection, Extend, Include, Singleton, ajax_request, _3Model,
     __slice = [].slice;
 
-  _3Model = require('_3Model');
+  _3Model = require('3vot-model');
 
   AjaxUtils = require("./ajax_utils");
 
@@ -239,7 +239,7 @@ module.exports=require('0tnfhX');
 
   AjaxUtils = require("./ajax_utils");
 
-  _3Model = require("_3Model");
+  _3Model = require("3vot-model");
 
   Singleton = (function() {
     function Singleton(record) {
@@ -269,7 +269,7 @@ module.exports=require('0tnfhX');
       }
       options.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getCollectionURL(this.record);
-      ajax_request.queueRequest.post(params, options).end((function(_this) {
+      return ajax_request.queueRequest.post(params, options).end((function(_this) {
         return function(err, res) {
           if (err || res.status >= 400) {
             return _this.failResponse(res.body, options);
@@ -277,7 +277,6 @@ module.exports=require('0tnfhX');
           return _this.recordResponse(res.body, options);
         };
       })(this));
-      return "ok";
     };
 
     Singleton.prototype.update = function(params, options) {
@@ -351,7 +350,7 @@ module.exports=require('0tnfhX');
   var AjaxUtils, _3Model,
     __slice = [].slice;
 
-  _3Model = require("_3Model");
+  _3Model = require("3vot-model");
 
   AjaxUtils = (function() {
     function AjaxUtils() {}
