@@ -2,6 +2,7 @@ _3Model  = require('_3Model')
 AjaxUtils = require("./ajax_utils")
 Collection = require("./ajax_collection")
 Singleton = require("./ajax_singleton")
+ajax_request = require("./ajax_request")
 
 
 Include =
@@ -39,5 +40,8 @@ Ajax.Auto =
   ajaxChange: (record, type, options = {}) ->
     return if options.ajax is false
     record.ajax()[type](options.ajax || {}, options)
+
+#for testing
+Ajax.request  = ajax_request;
 
 module.exports = Ajax

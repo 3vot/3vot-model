@@ -15,7 +15,7 @@ describe("Ajax", function(){
 
     server = sinon.fakeServer.create();
     
-    User.fetch({test: "ok"}, { o: true } );
+    User.fetch();
 
     User.one("ajaxSuccess", function(response){ 
       expect(User.first().first).toBe("roberto");
@@ -84,20 +84,61 @@ describe("Ajax", function(){
     expect(User.first().created_by).toEqual("rspine_user");
   });
   
-  it("should send POST on create", function(){
+  it("should send POST on create and update id", function(){
     server = sinon.fakeServer.create();
 
-    User.create({first: "Hans", last: "Zimmer", id: "IDD"}, { done: function(){ expect(this.id).toEqual("1") }});
+    var res = User.create({first: "Hans", last: "Zimmer", id: "IDD"}, { done: function(){ server.restore(); expect(this.id).toEqual("1") }});
+
+    console.log(res)
 
     server.requests[0].respond(
       200,
       { "Content-Type": "application/json" },
-      JSON.stringify( {first: "John", last: "Williams", id: "1"} )
+      JSON.stringify( {first: "Hans", last: "Zimmer", id: "1"} )
     );
 
-    
+    expect(server.requests[0].method).toEqual("POST");
+    expect(server.requests[0].responseText).toEqual('{"first":"Hans","last":"Zimmer","id":"1"}');
+    expect(server.requests[0].requestHeaders).toEqual(
+      {"Content-Type": "application/json;charset=utf-8",
+      "X-Requested-With": "XMLHttpRequest"
+      }
+    );
+    expect(server.requests[0].url).toEqual("/users");
+
   });
 
+  it("should send PUT on update", function(){
+    server = sinon.fakeServer.create();
+    User.refresh([{first: "John", last: "Williams", id: "IDD"}]);
+    User.first().first = "John2";
+    User.first().last= "Williams2";
+    User.first().update( { done: function(){ server.restore(); expect(this.count).toEqual(1) }}  )
 
 
+
+    server.requests[0].respond(
+      200,
+      { "Content-Type": "application/json" },
+      JSON.stringify( {first: "John2", last: "Williams2", id: "IDD", count: 1} )
+    );
+    
+  });
+  
+  it("should send DELETE on destroy", function(){
+    server = sinon.fakeServer.create();
+    
+    User.refresh([{first: "John", last: "Williams", id: "IDD"}]);
+
+    User.first().destroy( { done: function(){ server.restore(); expect(this.destroyed).toEqual(true);  }})
+
+    server.requests[0].respond(
+      200,
+      { "Content-Type": "application/json" },
+      "{}"
+    );
+
+  });
+  
+  
 });

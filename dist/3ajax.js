@@ -1,6 +1,6 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"0tnfhX":[function(require,module,exports){
 (function() {
-  var Ajax, AjaxUtils, Collection, Extend, Include, Singleton, _3Model,
+  var Ajax, AjaxUtils, Collection, Extend, Include, Singleton, ajax_request, _3Model,
     __slice = [].slice;
 
   _3Model = require('_3Model');
@@ -10,6 +10,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   Collection = require("./ajax_collection");
 
   Singleton = require("./ajax_singleton");
+
+  ajax_request = require("./ajax_request");
 
   Include = {
     ajax: function() {
@@ -61,11 +63,13 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }
   };
 
+  Ajax.request = ajax_request;
+
   module.exports = Ajax;
 
 }).call(this);
 
-},{"./ajax_collection":3,"./ajax_singleton":5,"./ajax_utils":6}],"_3Ajax":[function(require,module,exports){
+},{"./ajax_collection":3,"./ajax_request":4,"./ajax_singleton":5,"./ajax_utils":6}],"_3Ajax":[function(require,module,exports){
 module.exports=require('0tnfhX');
 },{}],3:[function(require,module,exports){
 (function() {
@@ -254,7 +258,7 @@ module.exports=require('0tnfhX');
       options.error = this.failResponse;
       return ajax_request.queueRequest.get(params, options).end((function(_this) {
         return function(res) {
-          return _this.recordResponse(options);
+          return _this.recordResponse(res.body, options);
         };
       })(this));
     };
@@ -265,7 +269,7 @@ module.exports=require('0tnfhX');
       }
       options.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getCollectionURL(this.record);
-      return ajax_request.queueRequest.post(params, options).end((function(_this) {
+      ajax_request.queueRequest.post(params, options).end((function(_this) {
         return function(err, res) {
           if (err || res.status >= 400) {
             return _this.failResponse(res.body, options);
@@ -273,6 +277,7 @@ module.exports=require('0tnfhX');
           return _this.recordResponse(res.body, options);
         };
       })(this));
+      return "ok";
     };
 
     Singleton.prototype.update = function(params, options) {
@@ -281,10 +286,12 @@ module.exports=require('0tnfhX');
       }
       options.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getURL(this.record);
-      options.error = this.failResponse;
       return ajax_request.queueRequest.put(params, options).end((function(_this) {
-        return function(res) {
-          return _this.recordResponse(options);
+        return function(err, res) {
+          if (err || res.status >= 400) {
+            return _this.failResponse(res.body, options);
+          }
+          return _this.recordResponse(res.body, options);
         };
       })(this));
     };
@@ -298,13 +305,13 @@ module.exports=require('0tnfhX');
       options.error = this.failResponse;
       return ajax_request.queueRequest.del(params, options).end((function(_this) {
         return function(res) {
-          return _this.recordResponse(options);
+          return _this.recordResponse(res.body, options);
         };
       })(this));
     };
 
     Singleton.prototype.recordResponse = function(data, options) {
-      var _ref, _ref1;
+      var _ref;
       if (options == null) {
         options = {};
       }
@@ -319,22 +326,16 @@ module.exports=require('0tnfhX');
         };
       })(this));
       this.record.trigger('ajaxSuccess', data);
-      if ((_ref = options.success) != null) {
-        _ref.apply(this.record);
-      }
-      return (_ref1 = options.done) != null ? _ref1.apply(this.record) : void 0;
+      return (_ref = options.done) != null ? _ref.apply(this.record) : void 0;
     };
 
     Singleton.prototype.failResponse = function(error, options) {
-      var _ref, _ref1;
+      var _ref;
       if (options == null) {
         options = {};
       }
       this.record.trigger('ajaxError', error);
-      if ((_ref = options.error) != null) {
-        _ref.apply(this.record);
-      }
-      return (_ref1 = options.fail) != null ? _ref1.apply(this.record) : void 0;
+      return (_ref = options.fail) != null ? _ref.apply(this.record) : void 0;
     };
 
     return Singleton;

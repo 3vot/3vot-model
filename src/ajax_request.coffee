@@ -28,7 +28,6 @@ class AjaxRequest
   
   @executeRequest= (type, params, options ) ->
     if @enabled == false then return @promise
-
     request = superagent[type](options.url)
       .type('json')
       .set('X-Requested-With','XMLHttpRequest')
