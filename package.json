@@ -1,6 +1,6 @@
 {
   "name": "3vot-model",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "3VOT Model based on SpineJS",
   "main": "index.js",
   "scripts": {
