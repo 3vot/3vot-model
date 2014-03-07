@@ -367,6 +367,8 @@ isBlank = (value) ->
 makeArray = (args) ->
   Array::slice.call(args, 0)
 
+Model.isBlank = isBlank;
+
 Model.sub = (instances, statics) ->
   class Result extends this
   Result.include(instances) if instances

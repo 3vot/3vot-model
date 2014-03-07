@@ -219,6 +219,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
   _3Model.Model = Model;
 
+  _3Model.isBlank = Model.isBlank;
+
   Module.extend.call(_3Model, Events);
 
   _3Model.Class = Module;
@@ -832,6 +834,8 @@ module.exports=require('bRhrlU');
   makeArray = function(args) {
     return Array.prototype.slice.call(args, 0);
   };
+
+  Model.isBlank = isBlank;
 
   Model.sub = function(instances, statics) {
     var Result;

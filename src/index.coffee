@@ -8,6 +8,9 @@ _3Model.Events     = Events
 _3Model.Module     = Module
 _3Model.Model      = Model
 
+_3Model.isBlank = Model.isBlank;
+
+
 # Global events
 
 Module.extend.call(_3Model, Events)
