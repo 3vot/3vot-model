@@ -17,7 +17,7 @@ class Collection
       delete params.id
       @find(id, params, options).end (err, res) =>
         if err then return @failResponse(err, options )
-        else if res.status >= 400 then return @failResponse(res.body, options )
+        else if res.status >= 400 then return @failResponse(res.text, options )
         @model.refresh(res.body, options)
         @recordsResponse(res, options)
       return true;
@@ -25,7 +25,7 @@ class Collection
     else
       @all(params, options).end (err, res) =>
         if err then return @failResponse(err, options )
-        else if res.status >= 400 then return @failResponse(res.body, options )
+        else if res.status >= 400 then return @failResponse(res.text, options )
         @model.refresh(res.body, options)
         @recordsResponse(res, options);
       return true
