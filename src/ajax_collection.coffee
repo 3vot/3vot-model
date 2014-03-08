@@ -34,14 +34,10 @@ class Collection
 
   recordsResponse: (data, options) =>
     @model.trigger('ajaxSuccess', data)
-    console.log(options)
-    
     options.done?.apply(@model, [data] )
 
   failResponse: (error, options) =>
     @model.trigger('ajaxError', error)
     options.fail?.apply(@model, [error] )
-    
-
 
 module.exports = Collection

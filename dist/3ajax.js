@@ -1,6 +1,6 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"0tnfhX":[function(require,module,exports){
 (function() {
-  var Ajax, AjaxUtils, Collection, Extend, Include, Singleton, ajax_request, _3Model,
+  var Action, Ajax, AjaxUtils, Collection, Extend, Include, Singleton, View, ajax_request, _3Model,
     __slice = [].slice;
 
   _3Model = require('3vot-model');
@@ -10,6 +10,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   Collection = require("./ajax_collection");
 
   Singleton = require("./ajax_singleton");
+
+  Action = require("./ajax_action");
+
+  View = require("./ajax_view");
 
   ajax_request = require("./ajax_request");
 
@@ -29,6 +33,12 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     ajax: function() {
       return new Collection(this);
     },
+    view: function() {
+      return new View(this);
+    },
+    action: function() {
+      return new Action(this);
+    },
     url: function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -45,6 +55,14 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     ajaxFetch: function() {
       var _ref;
       return (_ref = this.ajax()).fetch.apply(_ref, arguments);
+    },
+    callAction: function() {
+      var _ref;
+      return (_ref = this.action()).call.apply(_ref, arguments);
+    },
+    callView: function() {
+      var _ref;
+      return (_ref = this.view()).call.apply(_ref, arguments);
     }
   };
 
@@ -73,9 +91,68 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 }).call(this);
 
-},{"./ajax_collection":3,"./ajax_request":4,"./ajax_singleton":5,"./ajax_utils":6}],"_3Ajax":[function(require,module,exports){
+},{"./ajax_action":3,"./ajax_collection":4,"./ajax_request":5,"./ajax_singleton":6,"./ajax_utils":7,"./ajax_view":8}],"_3Ajax":[function(require,module,exports){
 module.exports=require('0tnfhX');
 },{}],3:[function(require,module,exports){
+(function() {
+  var Action, ajax_request,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  ajax_request = require("./ajax_request");
+
+  Action = (function() {
+    function Action(model) {
+      this.model = model;
+      this.failResponse = __bind(this.failResponse, this);
+      this.recordsResponse = __bind(this.recordsResponse, this);
+    }
+
+    Action.prototype.call = function(name, values, options) {
+      var params;
+      if (values == null) {
+        values = {};
+      }
+      if (options == null) {
+        options = {};
+      }
+      options.url = this.model.url() + "/actions/" + name;
+      params = {
+        data: values
+      };
+      ajax_request.queueRequest.post(params, options).end((function(_this) {
+        return function(err, res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.text, options);
+          }
+          return _this.recordsResponse(res.body, options);
+        };
+      })(this));
+      return true;
+    };
+
+    Action.prototype.recordsResponse = function(data, options) {
+      var _ref;
+      this.model.trigger('ajaxSuccess', data);
+      return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
+    };
+
+    Action.prototype.failResponse = function(error, options) {
+      var _ref;
+      this.model.trigger('ajaxError', error);
+      return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
+    };
+
+    return Action;
+
+  })();
+
+  module.exports = Action;
+
+}).call(this);
+
+},{"./ajax_request":5}],4:[function(require,module,exports){
 (function() {
   var Collection, ajax_request,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -154,7 +231,6 @@ module.exports=require('0tnfhX');
     Collection.prototype.recordsResponse = function(data, options) {
       var _ref;
       this.model.trigger('ajaxSuccess', data);
-      console.log(options);
       return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
     };
 
@@ -172,7 +248,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":4}],4:[function(require,module,exports){
+},{"./ajax_request":5}],5:[function(require,module,exports){
 (function() {
   var AjaxRequest, AjaxUtils, superagent;
 
@@ -253,7 +329,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_utils":6,"superagent":7}],5:[function(require,module,exports){
+},{"./ajax_utils":7,"superagent":9}],6:[function(require,module,exports){
 (function() {
   var AjaxUtils, Singleton, ajax_request, _3Model,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -382,7 +458,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":4,"./ajax_utils":6}],6:[function(require,module,exports){
+},{"./ajax_request":5,"./ajax_utils":7}],7:[function(require,module,exports){
 (function() {
   var AjaxUtils, _3Model,
     __slice = [].slice;
@@ -444,7 +520,63 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+(function() {
+  var View, ajax_request,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  ajax_request = require("./ajax_request");
+
+  View = (function() {
+    function View(model) {
+      this.model = model;
+      this.failResponse = __bind(this.failResponse, this);
+      this.recordsResponse = __bind(this.recordsResponse, this);
+    }
+
+    View.prototype.call = function(name, values, options) {
+      var params;
+      if (options == null) {
+        options = {};
+      }
+      options.url = this.model.url() + "/views/" + name;
+      params = {
+        query: values
+      };
+      ajax_request.queueRequest.get(params, options).end((function(_this) {
+        return function(err, res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.text, options);
+          }
+          return _this.recordsResponse(res.body, options);
+        };
+      })(this));
+      return true;
+    };
+
+    View.prototype.recordsResponse = function(data, options) {
+      var _ref;
+      this.model.trigger('ajaxSuccess', data);
+      return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
+    };
+
+    View.prototype.failResponse = function(error, options) {
+      var _ref;
+      this.model.trigger('ajaxError', error);
+      return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
+    };
+
+    return View;
+
+  })();
+
+  module.exports = View;
+
+}).call(this);
+
+},{"./ajax_request":5}],9:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -1440,7 +1572,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":8,"reduce":9}],8:[function(require,module,exports){
+},{"emitter":10,"reduce":11}],10:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -1598,7 +1730,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.

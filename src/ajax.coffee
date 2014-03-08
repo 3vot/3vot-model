@@ -2,6 +2,10 @@ _3Model  = require('3vot-model')
 AjaxUtils = require("./ajax_utils")
 Collection = require("./ajax_collection")
 Singleton = require("./ajax_singleton")
+Action = require("./ajax_action")
+
+View = require("./ajax_view")
+
 ajax_request = require("./ajax_request")
 
 Include =
@@ -13,6 +17,8 @@ Include =
     
 Extend =
   ajax: -> new Collection(this)
+  view: -> new View(this)
+  action: -> new Action(this)
     
   url: (args...) ->
     AjaxUtils.generateURL(@, args...)
@@ -29,6 +35,12 @@ Ajax =
 
   ajaxFetch: ->
     @ajax().fetch(arguments...)
+
+  callAction: ->
+    @action().call(arguments...)
+
+  callView: ->
+    @view().call(arguments...)
 
 Ajax.Auto =
   extended: ->

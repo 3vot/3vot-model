@@ -117,8 +117,6 @@ describe("Ajax", function(){
 
     var res = User.create({first: "Hans", last: "Zimmer", id: "IDD"}, { done: function(){ server.restore(); expect(this.id).toEqual("1") }});
 
-    console.log(res)
-
     server.requests[0].respond(
       200,
       { "Content-Type": "application/json" },
@@ -168,5 +166,41 @@ describe("Ajax", function(){
 
   });
   
+  
+  it("should call an action", function(done){
+    var server = sinon.fakeServer.create();
+
+    callbacks= {
+      done: function(){  },
+      fail: function(){ console.log(arguments); }
+    }
+  
+    User.callAction("name", {ok: true}, callbacks )
+
+    server.requests[0].respond(
+      200,
+      { "Content-Type": "application/json" },
+      "{}"
+    );
+
+  });
+  
+  it("should call a view", function(){
+    var server = sinon.fakeServer.create();
+
+    callbacks= {
+      done: function(){ },
+      fail: function(){ console.log(arguments); }
+    }
+  
+    User.callView( "name", {ok: true}, callbacks )
+
+    server.requests[0].respond(
+      200,
+      { "Content-Type": "application/json" },
+      "{}"
+    );
+
+  });
   
 });
