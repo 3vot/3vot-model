@@ -41,6 +41,9 @@ Ajax =
 
   callView: ->
     @view().call(arguments...)
+    
+  destroy: ->
+    @action().destroy(arguments...)
 
 Ajax.Auto =
   extended: ->

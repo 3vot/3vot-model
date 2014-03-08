@@ -63,6 +63,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     callView: function() {
       var _ref;
       return (_ref = this.view()).call.apply(_ref, arguments);
+    },
+    destroy: function() {
+      var _ref;
+      return (_ref = this.action()).destroy.apply(_ref, arguments);
     }
   };
 
@@ -106,6 +110,31 @@ module.exports=require('0tnfhX');
       this.failResponse = __bind(this.failResponse, this);
       this.recordsResponse = __bind(this.recordsResponse, this);
     }
+
+    Action.prototype.destroy = function(values, options) {
+      var params;
+      if (values == null) {
+        values = {};
+      }
+      if (options == null) {
+        options = {};
+      }
+      options.url = this.model.url();
+      params = {
+        query: values
+      };
+      ajax_request.queueRequest.del(params, options).end((function(_this) {
+        return function(err, res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.text, options);
+          }
+          return _this.recordsResponse(res.body, options);
+        };
+      })(this));
+      return true;
+    };
 
     Action.prototype.call = function(name, values, options) {
       var params;
