@@ -128,7 +128,7 @@ module.exports=require('0tnfhX');
             if (err) {
               return _this.failResponse(err, options);
             } else if (res.status >= 400) {
-              return _this.failResponse(res.body, options);
+              return _this.failResponse(res.text, options);
             }
             _this.model.refresh(res.body, options);
             return _this.recordsResponse(res, options);
@@ -141,7 +141,7 @@ module.exports=require('0tnfhX');
             if (err) {
               return _this.failResponse(err, options);
             } else if (res.status >= 400) {
-              return _this.failResponse(res.body, options);
+              return _this.failResponse(res.text, options);
             }
             _this.model.refresh(res.body, options);
             return _this.recordsResponse(res, options);
@@ -284,7 +284,7 @@ module.exports=require('0tnfhX');
           if (err) {
             return _this.failResponse(err, options);
           } else if (res.status >= 400) {
-            return _this.failResponse(res.body, options);
+            return _this.failResponse(res.text, options);
           }
           return _this.recordResponse(res.body, options);
         };
@@ -302,7 +302,7 @@ module.exports=require('0tnfhX');
           if (err) {
             return _this.failResponse(err, options);
           } else if (res.status >= 400) {
-            return _this.failResponse(res.body, options);
+            return _this.failResponse(res.text, options);
           }
           return _this.recordResponse(res.body, options);
         };
@@ -320,7 +320,7 @@ module.exports=require('0tnfhX');
           if (err) {
             return _this.failResponse(err, options);
           } else if (res.status >= 400) {
-            return _this.failResponse(res.body, options);
+            return _this.failResponse(res.text, options);
           }
           return _this.recordResponse(res.body, options);
         };
@@ -339,7 +339,7 @@ module.exports=require('0tnfhX');
           if (err) {
             return _this.failResponse(err, options);
           } else if (res.status >= 400) {
-            return _this.failResponse(res.body, options);
+            return _this.failResponse(res.text, options);
           }
           return _this.recordResponse(res.body, options);
         };
