@@ -161,6 +161,12 @@ class Model extends Module
         @[key] = value
     this
 
+  get: (attr) ->
+    return @[attr];
+
+  set: (attr, value) ->
+    @[attr] = value;
+
   attributes: ->
     result = {}
     for key in @constructor.attributes when key of this

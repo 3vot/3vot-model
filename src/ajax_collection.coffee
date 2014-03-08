@@ -19,7 +19,7 @@ class Collection
         if err then return @failResponse(err, options )
         else if res.status >= 400 then return @failResponse(res.body, options )
         @model.refresh(res.body, options)
-        @recordsResponse(res)
+        @recordsResponse(res, options)
       return true;
         
     else
@@ -27,16 +27,21 @@ class Collection
         if err then return @failResponse(err, options )
         else if res.status >= 400 then return @failResponse(res.body, options )
         @model.refresh(res.body, options)
-        @recordsResponse(res);
+        @recordsResponse(res, options);
       return true
 
   # Private
 
-  recordsResponse: (data, status, xhr) =>
-    @model.trigger('ajaxSuccess', data, status, xhr)
+  recordsResponse: (data, options) =>
+    @model.trigger('ajaxSuccess', data)
+    console.log(options)
+    
+    options.done?.apply(@model, [data] )
 
-  failResponse: (xhr, statusText, error) =>
-    @model.trigger('ajaxError', null, xhr, statusText, error)
+  failResponse: (error, options) =>
+    @model.trigger('ajaxError', error)
+    options.fail?.apply(@model, [error] )
+    
 
 
 module.exports = Collection

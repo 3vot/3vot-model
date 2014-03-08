@@ -4,7 +4,6 @@ Collection = require("./ajax_collection")
 Singleton = require("./ajax_singleton")
 ajax_request = require("./ajax_request")
 
-
 Include =
   ajax: -> new Singleton(this)
 
@@ -40,6 +39,10 @@ Ajax.Auto =
   ajaxChange: (record, type, options = {}) ->
     return if options.ajax is false
     record.ajax()[type](options.ajax || {}, options)
+
+
+if !_3Model.Model.host then _3Model.Model.host = ""
+
 
 #for testing
 Ajax.request  = ajax_request;

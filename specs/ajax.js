@@ -13,7 +13,7 @@ describe("Ajax", function(){
 
   it("can GET a collection on fetch", function(){
 
-    server = sinon.fakeServer.create();
+    var server = sinon.fakeServer.create();
     
     User.fetch();
 
@@ -33,7 +33,7 @@ describe("Ajax", function(){
   
   it("can GET a collection on fetch with query", function(){
 
-    server = sinon.fakeServer.create();
+    var server = sinon.fakeServer.create();
     
     User.fetch( { query: { fields: ["id", "first", "last"], where: "name = 'test'" } } );
 
@@ -51,8 +51,36 @@ describe("Ajax", function(){
 
   });
   
+  it("can GET a collection on fetch with query in done", function(){
+
+    var server = sinon.fakeServer.create();
+    
+    var done = function(){
+      expect(User.last().first).toBe("carlos");
+      server.restore();
+    }
+
+    User.fetch( { query: { fields: ["id", "first", "last"], where: "name = 'test'" } }, { done: done } );
+
+    server.requests[0].respond(
+        200,
+        { "Content-Type": "application/json" },
+        JSON.stringify([{ first: "carlos", last: "Provide examples", id: "IDDa" }])
+    );
+
+  });
+  
+  it("can GET a collection on fetch with query in fail", function(){
+    
+    var fail = function(){
+      expect(User.count()).toBe(0);
+    }
+
+    User.fetch( { query: { fields: ["id", "first", "last"], where: "name = 'test'" } }, { fail: fail } );
+  });
+  
   it("can GET a record on fetch", function(){
-    server = sinon.fakeServer.create();
+    var server = sinon.fakeServer.create();
     
     User.refresh([{first: "John", last: "Williams", id: "IDD"}]);
 
@@ -85,7 +113,7 @@ describe("Ajax", function(){
   });
   
   it("should send POST on create and update id", function(){
-    server = sinon.fakeServer.create();
+    var server = sinon.fakeServer.create();
 
     var res = User.create({first: "Hans", last: "Zimmer", id: "IDD"}, { done: function(){ server.restore(); expect(this.id).toEqual("1") }});
 
@@ -109,7 +137,7 @@ describe("Ajax", function(){
   });
 
   it("should send PUT on update", function(){
-    server = sinon.fakeServer.create();
+    var server = sinon.fakeServer.create();
     User.refresh([{first: "John", last: "Williams", id: "IDD"}]);
     User.first().first = "John2";
     User.first().last= "Williams2";
@@ -126,7 +154,7 @@ describe("Ajax", function(){
   });
   
   it("should send DELETE on destroy", function(){
-    server = sinon.fakeServer.create();
+    var server = sinon.fakeServer.create();
     
     User.refresh([{first: "John", last: "Williams", id: "IDD"}]);
 

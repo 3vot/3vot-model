@@ -517,6 +517,14 @@ module.exports=require('bRhrlU');
       return this;
     };
 
+    Model.prototype.get = function(attr) {
+      return this[attr];
+    };
+
+    Model.prototype.set = function(attr, value) {
+      return this[attr] = value;
+    };
+
     Model.prototype.attributes = function() {
       var key, result, _i, _len, _ref;
       result = {};

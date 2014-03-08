@@ -31,13 +31,11 @@ module.exports = (grunt) ->
         files: ["test/specs/src/*.coffee"]
         tasks: ['coffee:testFiles',"jasmine:salesforceModel"]
 
-    jasmine: 
-
+    jasmine:
       model: 
         src: ["./lib/index.js"]
         options: 
           specs: ['./specs/class.js', './specs/events.js' , './specs/model.js']
-
 
     browserify:
       basic: 

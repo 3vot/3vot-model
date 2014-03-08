@@ -36,7 +36,7 @@ class Singleton
     options.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)
     options.error = @failResponse
-    ajax_request.queueRequest.del(params, options).end (res) =>
+    ajax_request.queueRequest.del(params, options).end (err, res) =>
       if err then return @failResponse(err, options )
       else if res.status >= 400 then return @failResponse(res.body, options )
       @recordResponse(res.body, options)
@@ -56,6 +56,6 @@ class Singleton
 
   failResponse: (error, options = {}) =>
     @record.trigger('ajaxError', error)
-    options.fail?.apply(@record)
+    options.fail?.apply(@record, [error] )
 
 module.exports = Singleton

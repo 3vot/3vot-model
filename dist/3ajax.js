@@ -63,6 +63,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }
   };
 
+  if (!_3Model.Model.host) {
+    _3Model.Model.host = "";
+  }
+
   Ajax.request = ajax_request;
 
   module.exports = Ajax;
@@ -127,7 +131,7 @@ module.exports=require('0tnfhX');
               return _this.failResponse(res.body, options);
             }
             _this.model.refresh(res.body, options);
-            return _this.recordsResponse(res);
+            return _this.recordsResponse(res, options);
           };
         })(this));
         return true;
@@ -140,19 +144,24 @@ module.exports=require('0tnfhX');
               return _this.failResponse(res.body, options);
             }
             _this.model.refresh(res.body, options);
-            return _this.recordsResponse(res);
+            return _this.recordsResponse(res, options);
           };
         })(this));
         return true;
       }
     };
 
-    Collection.prototype.recordsResponse = function(data, status, xhr) {
-      return this.model.trigger('ajaxSuccess', data, status, xhr);
+    Collection.prototype.recordsResponse = function(data, options) {
+      var _ref;
+      this.model.trigger('ajaxSuccess', data);
+      console.log(options);
+      return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
     };
 
-    Collection.prototype.failResponse = function(xhr, statusText, error) {
-      return this.model.trigger('ajaxError', null, xhr, statusText, error);
+    Collection.prototype.failResponse = function(error, options) {
+      var _ref;
+      this.model.trigger('ajaxError', error);
+      return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
     };
 
     return Collection;
@@ -326,7 +335,7 @@ module.exports=require('0tnfhX');
       options.url = options.url || AjaxUtils.getURL(this.record);
       options.error = this.failResponse;
       return ajax_request.queueRequest.del(params, options).end((function(_this) {
-        return function(res) {
+        return function(err, res) {
           if (err) {
             return _this.failResponse(err, options);
           } else if (res.status >= 400) {
@@ -362,7 +371,7 @@ module.exports=require('0tnfhX');
         options = {};
       }
       this.record.trigger('ajaxError', error);
-      return (_ref = options.fail) != null ? _ref.apply(this.record) : void 0;
+      return (_ref = options.fail) != null ? _ref.apply(this.record, [error]) : void 0;
     };
 
     return Singleton;
