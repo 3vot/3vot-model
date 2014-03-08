@@ -31,10 +31,11 @@ class AjaxRequest
     request = superagent[type](options.url)
       .type('json')
       .set('X-Requested-With','XMLHttpRequest')
-      .on("error", options.error)
+      
 
-    request.withCredentials()  
+    request.withCredentials?()  
 
+    if options.error then request.on("error", options.error)
     if params.query then request = request.query( params.query )
     if params.data
       params.data = JSON.stringify(params.data) if typeof params.data isnt 'string'

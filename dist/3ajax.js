@@ -117,11 +117,15 @@ module.exports=require('0tnfhX');
       if (options == null) {
         options = {};
       }
-      options.error = this.failResponse;
       if (id = params.id) {
         delete params.id;
         this.find(id, params, options).end((function(_this) {
-          return function(res) {
+          return function(err, res) {
+            if (err) {
+              return _this.failResponse(err, options);
+            } else if (res.status >= 400) {
+              return _this.failResponse(res.body, options);
+            }
             _this.model.refresh(res.body, options);
             return _this.recordsResponse(res);
           };
@@ -129,7 +133,12 @@ module.exports=require('0tnfhX');
         return true;
       } else {
         this.all(params, options).end((function(_this) {
-          return function(res) {
+          return function(err, res) {
+            if (err) {
+              return _this.failResponse(err, options);
+            } else if (res.status >= 400) {
+              return _this.failResponse(res.body, options);
+            }
             _this.model.refresh(res.body, options);
             return _this.recordsResponse(res);
           };
@@ -208,8 +217,13 @@ module.exports=require('0tnfhX');
       if (this.enabled === false) {
         return this.promise;
       }
-      request = superagent[type](options.url).type('json').set('X-Requested-With', 'XMLHttpRequest').on("error", options.error);
-      request.withCredentials();
+      request = superagent[type](options.url).type('json').set('X-Requested-With', 'XMLHttpRequest');
+      if (typeof request.withCredentials === "function") {
+        request.withCredentials();
+      }
+      if (options.error) {
+        request.on("error", options.error);
+      }
       if (params.query) {
         request = request.query(params.query);
       }
@@ -258,6 +272,11 @@ module.exports=require('0tnfhX');
       options.error = this.failResponse;
       return ajax_request.queueRequest.get(params, options).end((function(_this) {
         return function(res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.body, options);
+          }
           return _this.recordResponse(res.body, options);
         };
       })(this));
@@ -271,7 +290,9 @@ module.exports=require('0tnfhX');
       options.url = options.url || AjaxUtils.getCollectionURL(this.record);
       return ajax_request.queueRequest.post(params, options).end((function(_this) {
         return function(err, res) {
-          if (err || res.status >= 400) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
             return _this.failResponse(res.body, options);
           }
           return _this.recordResponse(res.body, options);
@@ -287,7 +308,9 @@ module.exports=require('0tnfhX');
       options.url = options.url || AjaxUtils.getURL(this.record);
       return ajax_request.queueRequest.put(params, options).end((function(_this) {
         return function(err, res) {
-          if (err || res.status >= 400) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
             return _this.failResponse(res.body, options);
           }
           return _this.recordResponse(res.body, options);
@@ -304,6 +327,11 @@ module.exports=require('0tnfhX');
       options.error = this.failResponse;
       return ajax_request.queueRequest.del(params, options).end((function(_this) {
         return function(res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.body, options);
+          }
           return _this.recordResponse(res.body, options);
         };
       })(this));

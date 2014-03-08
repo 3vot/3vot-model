@@ -13,16 +13,19 @@ class Collection
     ajax_request.queueRequest.get(params, options)
 
   fetch: (params = {}, options = {}) ->
-    options.error = @failResponse
     if id = params.id
       delete params.id
-      @find(id, params, options).end (res) =>
+      @find(id, params, options).end (err, res) =>
+        if err then return @failResponse(err, options )
+        else if res.status >= 400 then return @failResponse(res.body, options )
         @model.refresh(res.body, options)
         @recordsResponse(res)
       return true;
         
     else
-      @all(params, options).end (res) =>
+      @all(params, options).end (err, res) =>
+        if err then return @failResponse(err, options )
+        else if res.status >= 400 then return @failResponse(res.body, options )
         @model.refresh(res.body, options)
         @recordsResponse(res);
       return true

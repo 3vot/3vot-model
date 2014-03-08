@@ -12,20 +12,24 @@ class Singleton
     options.url= options.url or AjaxUtils.getURL(@record)
     options.error = @failResponse
     ajax_request.queueRequest.get(params, options).end (res) =>
-      @recordResponse(res.body , options)
+      if err then return @failResponse(err, options )
+      else if res.status >= 400 then return @failResponse(res.body, options )
+      @recordResponse(res.body, options)
     
   create: (params, options = {}) ->
     options.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getCollectionURL(@record)
     ajax_request.queueRequest.post(params, options).end (err, res) =>
-      if err or res.status >= 400 then return @failResponse(res.body, options )
+      if err then return @failResponse(err, options )
+      else if res.status >= 400 then return @failResponse(res.body, options )
       @recordResponse(res.body, options)
 
   update: (params, options = {}) ->
     options.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)
     ajax_request.queueRequest.put(params, options).end (err, res) =>
-      if err or res.status >= 400 then return @failResponse(res.body, options )
+      if err then return @failResponse(err, options )
+      else if res.status >= 400 then return @failResponse(res.body, options )
       @recordResponse(res.body, options)
 
   destroy: (params, options = {}) ->
@@ -33,7 +37,9 @@ class Singleton
     options.url= options.url or AjaxUtils.getURL(@record)
     options.error = @failResponse
     ajax_request.queueRequest.del(params, options).end (res) =>
-      @recordResponse(res.body , options)
+      if err then return @failResponse(err, options )
+      else if res.status >= 400 then return @failResponse(res.body, options )
+      @recordResponse(res.body, options)
 
   # Private
   recordResponse: (data, options = {}) =>
