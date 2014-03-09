@@ -381,7 +381,7 @@ module.exports=require('0tnfhX');
       if (options == null) {
         options = {};
       }
-      options.data = this.record.toJSON();
+      params.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getURL(this.record);
       options.error = this.failResponse;
       return ajax_request.queueRequest.get(params, options).end((function(_this) {
@@ -400,7 +400,7 @@ module.exports=require('0tnfhX');
       if (options == null) {
         options = {};
       }
-      options.data = this.record.toJSON();
+      params.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getCollectionURL(this.record);
       return ajax_request.queueRequest.post(params, options).end((function(_this) {
         return function(err, res) {
@@ -418,7 +418,7 @@ module.exports=require('0tnfhX');
       if (options == null) {
         options = {};
       }
-      options.data = this.record.toJSON();
+      params.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getURL(this.record);
       return ajax_request.queueRequest.put(params, options).end((function(_this) {
         return function(err, res) {
@@ -436,7 +436,7 @@ module.exports=require('0tnfhX');
       if (options == null) {
         options = {};
       }
-      options.data = this.record.toJSON();
+      params.data = this.record.toJSON();
       options.url = options.url || AjaxUtils.getURL(this.record);
       options.error = this.failResponse;
       return ajax_request.queueRequest.del(params, options).end((function(_this) {
