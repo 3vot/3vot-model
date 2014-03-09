@@ -8,7 +8,7 @@ class Singleton
     @model = @record.constructor
 
   reload: (params, options = {}) ->
-    options.data = @record.toJSON()
+    params.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)
     options.error = @failResponse
     ajax_request.queueRequest.get(params, options).end (res) =>
@@ -17,7 +17,7 @@ class Singleton
       @recordResponse(res.body, options)
     
   create: (params, options = {}) ->
-    options.data = @record.toJSON()
+    params.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getCollectionURL(@record)
     ajax_request.queueRequest.post(params, options).end (err, res) =>
       if err then return @failResponse(err, options )
@@ -25,7 +25,7 @@ class Singleton
       @recordResponse(res.body, options)
 
   update: (params, options = {}) ->
-    options.data = @record.toJSON()
+    params.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)
     ajax_request.queueRequest.put(params, options).end (err, res) =>
       if err then return @failResponse(err, options )
@@ -33,7 +33,7 @@ class Singleton
       @recordResponse(res.body, options)
 
   destroy: (params, options = {}) ->
-    options.data = @record.toJSON()
+    params.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)
     options.error = @failResponse
     ajax_request.queueRequest.del(params, options).end (err, res) =>
