@@ -25,7 +25,7 @@ class View
 
   failResponse: (error, options) =>
     @model.trigger('ajaxError', error)
-    @model.trigger('viewError', data)
+    @model.trigger('viewError', error)
     options.fail?.apply(@model, [error] )
 
 module.exports = View

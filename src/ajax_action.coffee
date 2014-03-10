@@ -35,12 +35,11 @@ class Action
   recordsResponse: (data, options) =>
     @model.trigger('ajaxSuccess', data)
     @model.trigger('actionSuccess', data)
-
     options.done?.apply(@model, [data] )
 
   failResponse: (error, options) =>
     @model.trigger('ajaxError', error)
-    @model.trigger('actionError', data)
+    @model.trigger('actionError', error)
     options.fail?.apply(@model, [error] )
 
 module.exports = Action
