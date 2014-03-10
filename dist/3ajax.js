@@ -337,7 +337,7 @@ module.exports=require('0tnfhX');
       if (typeof request.withCredentials === "function") {
         request.withCredentials();
       }
-      if (type === "put" || type === "get") {
+      if (type === "put" || type === "post") {
         request = request.type('json');
       }
       if (options.error) {
