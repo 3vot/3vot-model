@@ -171,7 +171,7 @@ module.exports=require('0tnfhX');
     Action.prototype.failResponse = function(error, options) {
       var _ref;
       this.model.trigger('ajaxError', error);
-      this.model.trigger('actionError', data);
+      this.model.trigger('actionError', error);
       return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
     };
 
@@ -597,7 +597,7 @@ module.exports=require('0tnfhX');
     View.prototype.failResponse = function(error, options) {
       var _ref;
       this.model.trigger('ajaxError', error);
-      this.model.trigger('viewError', data);
+      this.model.trigger('viewError', error);
       return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
     };
 
