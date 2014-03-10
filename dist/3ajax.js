@@ -333,9 +333,12 @@ module.exports=require('0tnfhX');
       if (this.enabled === false) {
         return this.promise;
       }
-      request = superagent[type](options.url).type('json').set('X-Requested-With', 'XMLHttpRequest');
+      request = superagent[type](options.url).set('X-Requested-With', 'XMLHttpRequest');
       if (typeof request.withCredentials === "function") {
         request.withCredentials();
+      }
+      if (type === "put" || type === "get") {
+        request = request.type('json');
       }
       if (options.error) {
         request.on("error", options.error);

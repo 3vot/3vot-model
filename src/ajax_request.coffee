@@ -29,11 +29,12 @@ class AjaxRequest
   @executeRequest= (type, params, options ) ->
     if @enabled == false then return @promise
     request = superagent[type](options.url)
-      .type('json')
       .set('X-Requested-With','XMLHttpRequest')
       
 
     request.withCredentials?()  
+
+    if type == "put" or type == "get" then request= request.type('json')
 
     if options.error then request.on("error", options.error)
     if params.query then request = request.query( params.query )
