@@ -19,10 +19,13 @@ class View
 
   recordsResponse: (data, options) =>
     @model.trigger('ajaxSuccess', data)
+    @model.trigger('viewSuccess', data)
+    
     options.done?.apply(@model, [data] )
 
   failResponse: (error, options) =>
     @model.trigger('ajaxError', error)
+    @model.trigger('viewError', data)
     options.fail?.apply(@model, [error] )
 
 module.exports = View

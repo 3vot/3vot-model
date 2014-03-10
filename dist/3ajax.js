@@ -164,12 +164,14 @@ module.exports=require('0tnfhX');
     Action.prototype.recordsResponse = function(data, options) {
       var _ref;
       this.model.trigger('ajaxSuccess', data);
+      this.model.trigger('actionSuccess', data);
       return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
     };
 
     Action.prototype.failResponse = function(error, options) {
       var _ref;
       this.model.trigger('ajaxError', error);
+      this.model.trigger('actionError', data);
       return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
     };
 
@@ -588,12 +590,14 @@ module.exports=require('0tnfhX');
     View.prototype.recordsResponse = function(data, options) {
       var _ref;
       this.model.trigger('ajaxSuccess', data);
+      this.model.trigger('viewSuccess', data);
       return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
     };
 
     View.prototype.failResponse = function(error, options) {
       var _ref;
       this.model.trigger('ajaxError', error);
+      this.model.trigger('viewError', data);
       return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
     };
 
