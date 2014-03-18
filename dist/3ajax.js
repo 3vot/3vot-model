@@ -89,6 +89,10 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     _3Model.Model.host = "";
   }
 
+  if (!_3Model.Model.headers) {
+    _3Model.Model.headers = [];
+  }
+
   Ajax.request = ajax_request;
 
   module.exports = Ajax;
@@ -329,11 +333,19 @@ module.exports=require('0tnfhX');
     };
 
     AjaxRequest.executeRequest = function(type, params, options) {
-      var request;
+      var header, request, _i, _len, _ref;
       if (this.enabled === false) {
         return this.promise;
       }
       request = superagent[type](options.url).set('X-Requested-With', 'XMLHttpRequest');
+      _ref = _3Model.Model.headers;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        header = _ref[_i];
+        if (!header.name || !header.value) {
+          throw "header should be an object with name and value";
+        }
+        request = request.set(header.name, header.value);
+      }
       if (typeof request.withCredentials === "function") {
         request.withCredentials();
       }

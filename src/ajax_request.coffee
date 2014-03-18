@@ -31,6 +31,9 @@ class AjaxRequest
     request = superagent[type](options.url)
       .set('X-Requested-With','XMLHttpRequest')
       
+    for header in _3Model.Model.headers
+      if( !header.name or !header.value ) then throw "header should be an object with name and value"
+      request = request.set( header.name, header.value )
 
     request.withCredentials?()  
 

@@ -58,6 +58,9 @@ Ajax.Auto =
 
 if !_3Model.Model.host then _3Model.Model.host = ""
 
+if !_3Model.Model.headers then _3Model.Model.headers = []
+
+
 
 #for testing
 Ajax.request  = ajax_request;
