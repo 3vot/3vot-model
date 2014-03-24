@@ -30,6 +30,7 @@ class AjaxRequest
   @executeRestRequest= (type, params, options ) ->
     if @enabled == false then return @promise
     options.url = options.url.replace(Model.host + "/", "")
+    delete params.id
     vfCall = '{!$RemoteAction.ThreeVotApiController.handleRest}'
     
     fields = ""
