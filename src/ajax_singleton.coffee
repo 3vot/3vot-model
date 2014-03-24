@@ -1,13 +1,13 @@
-ajax_request = if(Visualforce) then require("./vf_request") else require("./ajax_request")
-
-AjaxUtils = require("./ajax_utils")
 _3Model = require("3vot-model")
+ajax_request = require("./ajax_request")
+AjaxUtils = require("./ajax_utils")
 
 class Singleton
   
   constructor: (@record) ->
     @model = @record.constructor
-
+    if( typeof Visualforce != "undefined" ) then ajax_request = require("./vf_request")    
+    
   reload: (params, options = {}) ->
     params.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)

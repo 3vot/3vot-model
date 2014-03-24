@@ -36,8 +36,7 @@ class AjaxRequest
     if type == "put" or type == "post" then fields = JSON.stringify( params.data )
     else if type == "get" then fields = options.record.attributes.joins(",")
       
-    
-    return (callback) ->   
+    request = end: (callback) ->   
       Visualforce.remoting.Manager.invokeAction vfCall, type, options.url, JSON.stringify( params.data ), 
       (result, event) ->
         if (event.status)

@@ -9,7 +9,12 @@ class AjaxUtils
     object.scope?() or object.scope
 
   @generateURL= (object, args...) ->
-    if object.className
+    if window and typeof window.Visualforce != "undefined"
+      if object.className then collection = object.className
+      else
+        collection = object.constructor.className
+        scope = AjaxUtils.getScope(object) or AjaxUtils.getScope(object.constructor)
+    else if object.className
       collection = object.className.toLowerCase() + 's'
       scope = AjaxUtils.getScope(object)
     else

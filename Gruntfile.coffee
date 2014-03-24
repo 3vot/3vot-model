@@ -60,4 +60,4 @@ module.exports = (grunt) ->
 
   grunt.registerTask("pack",["coffee", "browserify"])
   
-  grunt.registerTask('default', ['clean','coffee', 'jasmine']);
+  grunt.registerTask('default', ['clean','coffee', "browserify" , 'jasmine']);

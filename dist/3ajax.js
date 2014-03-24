@@ -380,11 +380,11 @@ module.exports=require('0tnfhX');
   var AjaxUtils, Singleton, ajax_request, _3Model,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  ajax_request = Visualforce ? require("./vf_request") : require("./ajax_request");
+  _3Model = require("3vot-model");
+
+  ajax_request = require("./ajax_request");
 
   AjaxUtils = require("./ajax_utils");
-
-  _3Model = require("3vot-model");
 
   Singleton = (function() {
     function Singleton(record) {
@@ -392,6 +392,9 @@ module.exports=require('0tnfhX');
       this.failResponse = __bind(this.failResponse, this);
       this.recordResponse = __bind(this.recordResponse, this);
       this.model = this.record.constructor;
+      if (typeof Visualforce !== "undefined") {
+        ajax_request = require("./vf_request");
+      }
     }
 
     Singleton.prototype.reload = function(params, options) {
@@ -526,7 +529,14 @@ module.exports=require('0tnfhX');
     AjaxUtils.generateURL = function() {
       var args, collection, object, path, scope;
       object = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      if (object.className) {
+      if (window && typeof window.Visualforce !== "undefined") {
+        if (object.className) {
+          collection = object.className;
+        } else {
+          collection = object.constructor.className;
+          scope = AjaxUtils.getScope(object) || AjaxUtils.getScope(object.constructor);
+        }
+      } else if (object.className) {
         collection = object.className.toLowerCase() + 's';
         scope = AjaxUtils.getScope(object);
       } else {
@@ -1641,7 +1651,7 @@ module.exports=require('0tnfhX');
     };
 
     AjaxRequest.executeRestRequest = function(type, params, options) {
-      var fields, vfCall;
+      var fields, request, vfCall;
       if (this.enabled === false) {
         return this.promise;
       }
@@ -1653,18 +1663,20 @@ module.exports=require('0tnfhX');
       } else if (type === "get") {
         fields = options.record.attributes.joins(",");
       }
-      return function(callback) {
-        return Visualforce.remoting.Manager.invokeAction(vfCall, type, options.url, JSON.stringify(params.data), function(result, event) {
-          if (event.status) {
-            return callback(null, result);
-          } else if (event.type === 'exception') {
-            return callback(event.message);
-          } else {
-            return callback(event.message);
-          }
-        }, {
-          escape: true
-        });
+      return request = {
+        end: function(callback) {
+          return Visualforce.remoting.Manager.invokeAction(vfCall, type, options.url, JSON.stringify(params.data), function(result, event) {
+            if (event.status) {
+              return callback(null, result);
+            } else if (event.type === 'exception') {
+              return callback(event.message);
+            } else {
+              return callback(event.message);
+            }
+          }, {
+            escape: true
+          });
+        }
       };
     };
 
