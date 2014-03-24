@@ -1656,7 +1656,8 @@ module.exports=require('0tnfhX');
         return this.promise;
       }
       options.url = options.url.replace(Model.host + "/", "");
-      delete params.id;
+      delete params.data.id;
+      console.log(params.data);
       vfCall = 'r2.ThreeVotApiController.handleRest';
       fields = "";
       if (type === "put" || type === "post") {
