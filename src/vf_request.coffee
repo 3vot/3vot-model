@@ -31,6 +31,7 @@ class AjaxRequest
     if @enabled == false then return @promise
     options.url = options.url.replace(Model.host + "/", "")
     delete params.data.id
+    console.log(params.data)
     vfCall = 'r2.ThreeVotApiController.handleRest'
     
     fields = ""
