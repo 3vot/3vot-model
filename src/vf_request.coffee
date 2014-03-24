@@ -31,7 +31,7 @@ class AjaxRequest
     if @enabled == false then return @promise
     options.url = options.url.replace(Model.host + "/", "")
     delete params.id
-    vfCall = '{!$RemoteAction.ThreeVotApiController.handleRest}'
+    vfCall = 'r2.ThreeVotApiController.handleRest'
     
     fields = ""
     if type == "put" or type == "post" then fields = JSON.stringify( params.data )

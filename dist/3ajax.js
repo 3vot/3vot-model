@@ -1656,7 +1656,8 @@ module.exports=require('0tnfhX');
         return this.promise;
       }
       options.url = options.url.replace(Model.host + "/", "");
-      vfCall = '{!$RemoteAction.ThreeVotApiController.handleRest}';
+      delete params.id;
+      vfCall = 'r2.ThreeVotApiController.handleRest';
       fields = "";
       if (type === "put" || type === "post") {
         fields = JSON.stringify(params.data);
