@@ -1,4 +1,5 @@
-ajax_request = require("./ajax_request")
+ajax_request = if(Visualforce) then require("./vf_request") else require("./ajax_request")
+
 AjaxUtils = require("./ajax_utils")
 _3Model = require("3vot-model")
 
@@ -11,6 +12,7 @@ class Singleton
     params.data = @record.toJSON()
     options.url= options.url or AjaxUtils.getURL(@record)
     options.error = @failResponse
+    options.record = @record
     ajax_request.queueRequest.get(params, options).end (res) =>
       if err then return @failResponse(err, options )
       else if res.status >= 400 then return @failResponse(res.text, options )
