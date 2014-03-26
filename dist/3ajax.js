@@ -189,16 +189,21 @@ module.exports=require('0tnfhX');
 
 },{"./ajax_request":5}],4:[function(require,module,exports){
 (function() {
-  var Collection, ajax_request,
+  var AjaxUtils, Collection, ajax_request,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   ajax_request = require("./ajax_request");
+
+  AjaxUtils = require("./ajax_utils");
 
   Collection = (function() {
     function Collection(model) {
       this.model = model;
       this.failResponse = __bind(this.failResponse, this);
       this.recordsResponse = __bind(this.recordsResponse, this);
+      if (typeof Visualforce !== "undefined") {
+        ajax_request = require("./vf_request");
+      }
     }
 
     Collection.prototype.find = function(id, params, options) {
@@ -209,10 +214,9 @@ module.exports=require('0tnfhX');
       record = new this.model({
         id: id
       });
-      if (!options.url) {
-        options.url = record.url;
-      }
-      return ajax_request.queueRequest.get(params, options);
+      options.url = options.url || AjaxUtils.getURL(record);
+      options.model = this.model;
+      return ajax_request.queueRequest.get(params, options, this.model);
     };
 
     Collection.prototype.all = function(params, options) {
@@ -226,7 +230,7 @@ module.exports=require('0tnfhX');
     };
 
     Collection.prototype.fetch = function(params, options) {
-      var id;
+      var id, _this;
       if (params == null) {
         params = {};
       }
@@ -235,17 +239,16 @@ module.exports=require('0tnfhX');
       }
       if (id = params.id) {
         delete params.id;
-        this.find(id, params, options).end((function(_this) {
-          return function(err, res) {
-            if (err) {
-              return _this.failResponse(err, options);
-            } else if (res.status >= 400) {
-              return _this.failResponse(res.text, options);
-            }
-            _this.model.refresh(res.body, options);
-            return _this.recordsResponse(res, options);
-          };
-        })(this));
+        _this = this;
+        this.find(id, params, options).end(function(err, res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.text, options);
+          }
+          _this.model.refresh(res.body, options);
+          return _this.recordsResponse(res, options);
+        });
         return true;
       } else {
         this.all(params, options).end((function(_this) {
@@ -283,7 +286,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":5}],5:[function(require,module,exports){
+},{"./ajax_request":5,"./ajax_utils":7,"./vf_request":12}],5:[function(require,module,exports){
 (function() {
   var AjaxRequest, AjaxUtils, superagent;
 
@@ -532,8 +535,9 @@ module.exports=require('0tnfhX');
       if (window && typeof window.Visualforce !== "undefined") {
         if (object.className) {
           collection = object.className;
+          scope = AjaxUtils.getScope(object);
         } else {
-          collection = object.constructor.className;
+          collection = typeof object.constructor.url === 'string' ? object.constructor.url : object.constructor.className;
           scope = AjaxUtils.getScope(object) || AjaxUtils.getScope(object.constructor);
         }
       } else if (object.className) {
@@ -1040,16 +1044,23 @@ module.exports=require('0tnfhX');
         return;
       }
       if (typeof objects === 'string') {
+        objects.replace(/\Id/g, 'id');
         objects = JSON.parse(objects);
       }
       if (isArray(objects)) {
         _results = [];
         for (_i = 0, _len = objects.length; _i < _len; _i++) {
           value = objects[_i];
+          if (value.Id) {
+            value.id = value.Id;
+          }
           _results.push(new this(value));
         }
         return _results;
       } else {
+        if (objects.Id) {
+          objects.id = objects.Id;
+        }
         return new this(objects);
       }
     };
@@ -1650,33 +1661,54 @@ module.exports=require('0tnfhX');
       }
     };
 
-    AjaxRequest.executeRestRequest = function(type, params, options) {
-      var fields, request, vfCall;
+    AjaxRequest.executeRestRequest = function(type, params, options, model) {
+      var fields, request, vfCall, _ref;
       if (this.enabled === false) {
         return this.promise;
       }
       options.url = options.url.replace(Model.host + "/", "");
-      delete params.data.id;
-      console.log(params.data);
+      if ((_ref = params.data) != null) {
+        delete _ref.id;
+      }
       vfCall = 'r2.ThreeVotApiController.handleRest';
       fields = "";
       if (type === "put" || type === "post") {
         fields = JSON.stringify(params.data);
       } else if (type === "get") {
-        fields = options.record.attributes.joins(",");
+        fields = options.model.attributes.join(",");
       }
       return request = {
         end: function(callback) {
-          return Visualforce.remoting.Manager.invokeAction(vfCall, type, options.url, JSON.stringify(params.data), function(result, event) {
+          return Visualforce.remoting.Manager.invokeAction(vfCall, type, options.url, fields, function(result, event) {
             if (event.status) {
-              return callback(null, result);
+              if (type === "put" && result === null || (type === "del" && result === null)) {
+                result = '{}';
+              } else if (type !== "del" && type !== "put" && result === null) {
+                return callback("Null return from action method");
+              }
+              result = JSON.parse(result);
+              if (Array.isArray(result) && result[0].message && result[0].errorCode) {
+                return callback(result[0].message);
+              }
+              if (result && result.message && result.errorCode) {
+                return callback(result[0].message);
+              }
+              if (result) {
+                delete result.errors;
+              }
+              if (result) {
+                delete result.success;
+              }
+              return callback(null, {
+                body: result
+              });
             } else if (event.type === 'exception') {
               return callback(event.message);
             } else {
               return callback(event.message);
             }
           }, {
-            escape: true
+            escape: false
           });
         }
       };

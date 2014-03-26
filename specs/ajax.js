@@ -91,7 +91,7 @@ describe("Ajax", function(){
       server.restore()
     });
     
-    server.requests[1].respond(
+    server.requests[0].respond(
       200,
       { "Content-Type": "application/json" },
       JSON.stringify( {first: "John", last: "Williams", id: "IDD"} )

@@ -51,13 +51,34 @@ module.exports = (grunt) ->
           alias: ["./lib/ajax.js:_3Ajax"]
           external: ["3vot-model"]
 
+    s3: 
+      options: 
+        key: 'AKIAJP5OIVAJN3XSMBPQ',
+        secret: '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',
+        bucket: 'test.3vot.com',
+        access: 'public-read',
+        headers: 
+          "Cache-Control": "max-age=0, public",
+          "Expires": new Date(Date.now() + 1).toUTCString()
+
+      dev:
+        upload: [
+          src: './dist/*.js',
+          options: { gzip: true }
+        ]
+   
+
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-s3');
+
 
   grunt.registerTask("pack",["coffee", "browserify"])
+
+  grunt.registerTask("dev",["coffee", "browserify", "s3"])
   
   grunt.registerTask('default', ['clean','coffee', "browserify" , 'jasmine']);

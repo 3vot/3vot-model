@@ -9,7 +9,7 @@ View = require("./ajax_view")
 ajax_request = require("./ajax_request")
 
 Include =
-  ajax: -> new Singleton(this)
+  ajax: -> new Singleton(@)
 
   url: (args...) ->
     args.unshift(encodeURIComponent(@id))

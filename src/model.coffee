@@ -111,10 +111,14 @@ class Model extends Module
   @fromJSON: (objects) ->
     return unless objects
     if typeof objects is 'string'
+      objects.replace(/\Id/g,'id')
       objects = JSON.parse(objects)
     if isArray(objects)
-      (new @(value) for value in objects)
+      for value in objects
+        value.id = value.Id if value.Id
+        new @(value)
     else
+      objects.id = objects.Id if objects.Id
       new @(objects)
 
   @fromForm: ->

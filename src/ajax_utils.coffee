@@ -10,10 +10,15 @@ class AjaxUtils
 
   @generateURL= (object, args...) ->
     if window and typeof window.Visualforce != "undefined"
-      if object.className then collection = object.className
+      
+      if object.className
+        collection = object.className
+        scope = AjaxUtils.getScope(object)  
+      
       else
-        collection = object.constructor.className
+        collection = if typeof object.constructor.url is 'string' then object.constructor.url else object.constructor.className
         scope = AjaxUtils.getScope(object) or AjaxUtils.getScope(object.constructor)
+
     else if object.className
       collection = object.className.toLowerCase() + 's'
       scope = AjaxUtils.getScope(object)
@@ -23,6 +28,8 @@ class AjaxUtils
       else
         collection = object.constructor.className.toLowerCase() + 's'
       scope = AjaxUtils.getScope(object) or AjaxUtils.getScope(object.constructor)
+
+
     args.unshift(collection)
     args.unshift(scope)
     # construct and clean url
