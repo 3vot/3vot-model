@@ -9,7 +9,8 @@ class Collection
     record = new @model(id: id)
     options.url= options.url or AjaxUtils.getURL(record)
     options.model = @model
-    ajax_request.queueRequest.get(params, options, @model)
+    params.query = params.query or @model.attributes.join(",")
+    ajax_request.queueRequest.get(params, options)
 
   all: (params, options = {}) ->
     options.url = @model.url() if !options.url

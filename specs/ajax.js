@@ -6,8 +6,7 @@ describe("Ajax", function(){
     //_3Model.Ajax.clearQueue();
 
     User = _3Model.Model.setup("User", ["first", "last"]);
-    User.extend(_3Ajax);
-    User.extend(_3Ajax.Auto);
+   
 
   });
 

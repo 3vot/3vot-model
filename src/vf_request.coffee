@@ -33,9 +33,8 @@ class AjaxRequest
 
     vfCall = 'r2.ThreeVotApiController.handleRest'
     
-    fields = ""
-    if type == "put" or type == "post" then fields = JSON.stringify( params.data )
-    else if type == "get" then fields = options.model.attributes.join(",")
+    fields = "{}"
+    fields = JSON.stringify( params.data or "{}" ) if type == "put" or type == "post" 
 
     request = end: (callback) ->   
       Visualforce.remoting.Manager.invokeAction vfCall, type, options.url, fields, 

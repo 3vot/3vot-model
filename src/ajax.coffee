@@ -3,6 +3,7 @@ AjaxUtils = require("./ajax_utils")
 Collection = require("./ajax_collection")
 Singleton = require("./ajax_singleton")
 Action = require("./ajax_action")
+Query = require("./ajax_query")
 
 View = require("./ajax_view")
 
@@ -19,6 +20,7 @@ Extend =
   ajax: -> new Collection(this)
   view: -> new View(this)
   action: -> new Action(this)
+  queryManager: -> new Query(this)
     
   url: (args...) ->
     AjaxUtils.generateURL(@, args...)
@@ -27,9 +29,11 @@ Ajax =
 
   extended: ->
     @fetch @ajaxFetch
-
+    @change @ajaxChange
+    @query = @ajaxQuery
     @extend Extend
     @include Include
+    
 
   # Private
 
@@ -41,25 +45,16 @@ Ajax =
 
   callView: ->
     @view().call(arguments...)
+  
+  ajaxQuery: ->
+    @queryManager().manualQuery(arguments...)
     
   destroy: ->
     @action().destroy(arguments...)
 
-Ajax.Auto =
-  extended: ->
-    @change @ajaxChange
-
-  # Private
-
   ajaxChange: (record, type, options = {}) ->
-    return if options.ajax is false
+    return if options.ajax is false or record.constructor.autoAjax is false
     record.ajax()[type](options.ajax || {}, options)
-
-
-if !_3Model.Model.host then _3Model.Model.host = ""
-
-if !_3Model.Model.headers then _3Model.Model.headers = []
-
 
 
 #for testing

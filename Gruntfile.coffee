@@ -63,7 +63,7 @@ module.exports = (grunt) ->
 
       dev:
         upload: [
-          src: './dist/*.js',
+          src: './dist/*.*',
           options: { gzip: true }
         ]
    

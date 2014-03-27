@@ -7,6 +7,8 @@ class Model extends Module
   @records    : []
   @irecords   : {}
   @attributes : []
+  @host: ""
+  @headers: []
 
   @configure: (name, attributes...) ->
     @className = name
@@ -389,6 +391,8 @@ Model.sub = (instances, statics) ->
 Model.setup = (name, attributes = []) ->
   class Instance extends this
   Instance.configure(name, attributes...)
+  Ajax = require("./ajax")
+  Instance.extend(Ajax);
   Instance
 
 Model.host = ""

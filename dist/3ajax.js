@@ -1,6 +1,6 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"0tnfhX":[function(require,module,exports){
 (function() {
-  var Action, Ajax, AjaxUtils, Collection, Extend, Include, Singleton, View, ajax_request, _3Model,
+  var Action, Ajax, AjaxUtils, Collection, Extend, Include, Query, Singleton, View, ajax_request, _3Model,
     __slice = [].slice;
 
   _3Model = require('3vot-model');
@@ -12,6 +12,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   Singleton = require("./ajax_singleton");
 
   Action = require("./ajax_action");
+
+  Query = require("./ajax_query");
 
   View = require("./ajax_view");
 
@@ -39,6 +41,9 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     action: function() {
       return new Action(this);
     },
+    queryManager: function() {
+      return new Query(this);
+    },
     url: function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -49,6 +54,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   Ajax = {
     extended: function() {
       this.fetch(this.ajaxFetch);
+      this.change(this.ajaxChange);
+      this.query = this.ajaxQuery;
       this.extend(Extend);
       return this.include(Include);
     },
@@ -64,34 +71,24 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
       var _ref;
       return (_ref = this.view()).call.apply(_ref, arguments);
     },
+    ajaxQuery: function() {
+      var _ref;
+      return (_ref = this.queryManager()).manualQuery.apply(_ref, arguments);
+    },
     destroy: function() {
       var _ref;
       return (_ref = this.action()).destroy.apply(_ref, arguments);
-    }
-  };
-
-  Ajax.Auto = {
-    extended: function() {
-      return this.change(this.ajaxChange);
     },
     ajaxChange: function(record, type, options) {
       if (options == null) {
         options = {};
       }
-      if (options.ajax === false) {
+      if (options.ajax === false || record.constructor.autoAjax === false) {
         return;
       }
       return record.ajax()[type](options.ajax || {}, options);
     }
   };
-
-  if (!_3Model.Model.host) {
-    _3Model.Model.host = "";
-  }
-
-  if (!_3Model.Model.headers) {
-    _3Model.Model.headers = [];
-  }
 
   Ajax.request = ajax_request;
 
@@ -99,7 +96,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 }).call(this);
 
-},{"./ajax_action":3,"./ajax_collection":4,"./ajax_request":5,"./ajax_singleton":6,"./ajax_utils":7,"./ajax_view":8}],"_3Ajax":[function(require,module,exports){
+},{"./ajax_action":3,"./ajax_collection":4,"./ajax_query":5,"./ajax_request":6,"./ajax_singleton":7,"./ajax_utils":8,"./ajax_view":9}],"_3Ajax":[function(require,module,exports){
 module.exports=require('0tnfhX');
 },{}],3:[function(require,module,exports){
 (function() {
@@ -187,7 +184,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":5}],4:[function(require,module,exports){
+},{"./ajax_request":6}],4:[function(require,module,exports){
 (function() {
   var AjaxUtils, Collection, ajax_request,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -216,7 +213,8 @@ module.exports=require('0tnfhX');
       });
       options.url = options.url || AjaxUtils.getURL(record);
       options.model = this.model;
-      return ajax_request.queueRequest.get(params, options, this.model);
+      params.query = params.query || this.model.attributes.join(",");
+      return ajax_request.queueRequest.get(params, options);
     };
 
     Collection.prototype.all = function(params, options) {
@@ -286,7 +284,67 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":5,"./ajax_utils":7,"./vf_request":12}],5:[function(require,module,exports){
+},{"./ajax_request":6,"./ajax_utils":8,"./vf_request":13}],5:[function(require,module,exports){
+(function() {
+  var AjaxUtils, Query, ajax_request, _3Model,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  ajax_request = require("./ajax_request");
+
+  AjaxUtils = require("./ajax_utils");
+
+  _3Model = require("3vot-model");
+
+  Query = (function() {
+    function Query(model) {
+      this.model = model;
+      this.failResponse = __bind(this.failResponse, this);
+      this.recordsResponse = __bind(this.recordsResponse, this);
+      if (typeof Visualforce !== "undefined") {
+        ajax_request = require("./vf_request");
+      }
+    }
+
+    Query.prototype.manualQuery = function(query, options) {
+      if (options == null) {
+        options = {};
+      }
+      options.url = _3Model.Model.host + "/query?query=" + query;
+      ajax_request.queueRequest.get({}, options, this.model).end((function(_this) {
+        return function(err, res) {
+          if (err) {
+            return _this.failResponse(err, options);
+          } else if (res.status >= 400) {
+            return _this.failResponse(res.text, options);
+          }
+          _this.model.refresh(res.body, options);
+          return _this.recordsResponse(res, options);
+        };
+      })(this));
+      return true;
+    };
+
+    Query.prototype.recordsResponse = function(data, options) {
+      var _ref;
+      this.model.trigger('ajaxSuccess', data);
+      return (_ref = options.done) != null ? _ref.apply(this.model, [data]) : void 0;
+    };
+
+    Query.prototype.failResponse = function(error, options) {
+      var _ref;
+      this.model.trigger('ajaxError', error);
+      return (_ref = options.fail) != null ? _ref.apply(this.model, [error]) : void 0;
+    };
+
+    return Query;
+
+  })();
+
+  module.exports = Query;
+
+}).call(this);
+
+},{"./ajax_request":6,"./ajax_utils":8,"./vf_request":13}],6:[function(require,module,exports){
 (function() {
   var AjaxRequest, AjaxUtils, superagent;
 
@@ -378,7 +436,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_utils":7,"superagent":13}],6:[function(require,module,exports){
+},{"./ajax_utils":8,"superagent":14}],7:[function(require,module,exports){
 (function() {
   var AjaxUtils, Singleton, ajax_request, _3Model,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -511,7 +569,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":5,"./ajax_utils":7,"./vf_request":12}],7:[function(require,module,exports){
+},{"./ajax_request":6,"./ajax_utils":8,"./vf_request":13}],8:[function(require,module,exports){
 (function() {
   var AjaxUtils, _3Model,
     __slice = [].slice;
@@ -581,7 +639,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function() {
   var View, ajax_request,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -639,7 +697,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_request":5}],9:[function(require,module,exports){
+},{"./ajax_request":6}],10:[function(require,module,exports){
 (function() {
   var Events, trim,
     __slice = [].slice;
@@ -842,7 +900,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function() {
   var Events, Model, Module, createObject, isArray, isBlank, makeArray,
     __hasProp = {}.hasOwnProperty,
@@ -863,6 +921,10 @@ module.exports=require('0tnfhX');
     Model.irecords = {};
 
     Model.attributes = [];
+
+    Model.host = "";
+
+    Model.headers = [];
 
     Model.configure = function() {
       var attributes, name;
@@ -1488,7 +1550,7 @@ module.exports=require('0tnfhX');
   };
 
   Model.setup = function(name, attributes) {
-    var Instance;
+    var Ajax, Instance;
     if (attributes == null) {
       attributes = [];
     }
@@ -1503,6 +1565,8 @@ module.exports=require('0tnfhX');
 
     })(this);
     Instance.configure.apply(Instance, [name].concat(__slice.call(attributes)));
+    Ajax = require("./ajax");
+    Instance.extend(Ajax);
     return Instance;
   };
 
@@ -1514,7 +1578,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./events":9,"./module":11}],11:[function(require,module,exports){
+},{"./ajax":"0tnfhX","./events":10,"./module":12}],12:[function(require,module,exports){
 (function() {
   var Module, moduleKeywords,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
@@ -1612,7 +1676,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function() {
   var AjaxRequest, AjaxUtils, Model;
 
@@ -1671,11 +1735,9 @@ module.exports=require('0tnfhX');
         delete _ref.id;
       }
       vfCall = 'r2.ThreeVotApiController.handleRest';
-      fields = "";
+      fields = "{}";
       if (type === "put" || type === "post") {
-        fields = JSON.stringify(params.data);
-      } else if (type === "get") {
-        fields = options.model.attributes.join(",");
+        fields = JSON.stringify(params.data || "{}");
       }
       return request = {
         end: function(callback) {
@@ -1722,7 +1784,7 @@ module.exports=require('0tnfhX');
 
 }).call(this);
 
-},{"./ajax_utils":7,"./model":10}],13:[function(require,module,exports){
+},{"./ajax_utils":8,"./model":11}],14:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2718,7 +2780,7 @@ request.put = function(url, data, fn){
 
 module.exports = request;
 
-},{"emitter":14,"reduce":15}],14:[function(require,module,exports){
+},{"emitter":15,"reduce":16}],15:[function(require,module,exports){
 
 /**
  * Expose `Emitter`.
@@ -2876,7 +2938,7 @@ Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 /**
  * Reduce `arr` with `fn`.
