@@ -340,15 +340,95 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
   module.exports = Query;
 
+  ({
+    getQuery: (function(_this) {
+      return function(options) {
+        if (options == null) {
+          options = {
+            "": true
+          };
+        }
+        if (!RSpine.isArray(options)) {
+          options = [options];
+        }
+        return _this.queryString() + _this.getQueryCondition(options);
+      };
+    })(this),
+    getQueryCondition: function(conditions) {
+      var filter, filterKey, key, orderFilterString, queryFilterString, querySinceLastUpdate, querySinceLastUpdated, stringFilters, thisFilter, _i, _j, _len, _len1, _ref;
+      if (Object.keys(this.filters).length === 0) {
+        return "";
+      }
+      stringFilters = [];
+      queryFilterString = "";
+      orderFilterString = "";
+      querySinceLastUpdated = this.querySinceLastUpdate;
+      for (_i = 0, _len = conditions.length; _i < _len; _i++) {
+        filter = conditions[_i];
+        if (!filter.junction) {
+          filter.junction = "and";
+        }
+        if (stringFilters.length === 0) {
+          filter.junction = "where";
+        }
+        filterKey = "";
+        _ref = Object.keys(filter);
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          key = _ref[_j];
+          if (key !== "junction") {
+            filterKey = key;
+          }
+        }
+        if (key === "sinceLastUpdate") {
+          querySinceLastUpdate = true;
+        }
+        if (key === "avoidLastUpdate") {
+          querySinceLastUpdate = false;
+        }
+        if (filterKey !== "orderBy" && filterKey !== "sinceLastUpdate" && key !== "avoidLastUpdate") {
+          thisFilter = this.filters[filterKey];
+          thisFilter = thisFilter.replace("?", filter[filterKey]);
+          stringFilters.push(thisFilter);
+          queryFilterString += " " + filter.junction + " " + thisFilter;
+        } else if (filterKey === "orderBy") {
+          orderFilterString = " ORDER " + filter[filterKey];
+        }
+      }
+      if (querySinceLastUpdated) {
+        queryFilterString = " and LastModifiedDate >= " + this.lastUpdate;
+      }
+      return queryFilterString + orderFilterString;
+    },
+    queryString: (function(_this) {
+      return function() {
+        var attribute, query, _i, _len, _ref, _ref1;
+        query = "select ";
+        _ref = _this.attributes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          attribute = _ref[_i];
+          if (((_ref1 = _this.avoidQueryList) != null ? _ref1.indexOf(attribute) : void 0) === -1) {
+            query += attribute + ",";
+          }
+        }
+        query += "Id  ";
+        query += "from " + _this.className;
+        query += " ";
+        return query;
+      };
+    })(this)
+  });
+
 }).call(this);
 
 },{"./ajax_request":5,"./ajax_utils":7,"./vf_request":14,"3vot-model":"bRhrlU"}],5:[function(require,module,exports){
 (function() {
-  var AjaxRequest, AjaxUtils, superagent;
+  var AjaxRequest, AjaxUtils, superagent, _3Model;
 
   superagent = require("superagent");
 
   AjaxUtils = require("./ajax_utils");
+
+  _3Model = require("3vot-model");
 
   AjaxRequest = (function() {
     function AjaxRequest() {}
@@ -434,7 +514,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 }).call(this);
 
-},{"./ajax_utils":7,"superagent":15}],6:[function(require,module,exports){
+},{"./ajax_utils":7,"3vot-model":"bRhrlU","superagent":15}],6:[function(require,module,exports){
 (function() {
   var AjaxUtils, Singleton, ajax_request, _3Model,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };

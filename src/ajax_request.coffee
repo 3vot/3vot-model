@@ -1,5 +1,6 @@
 superagent = require("superagent")
 AjaxUtils = require("./ajax_utils")
+_3Model = require("3vot-model")
 
 class AjaxRequest
 

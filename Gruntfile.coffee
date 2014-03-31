@@ -43,19 +43,12 @@ module.exports = (grunt) ->
         dest: 'dist/3model.js'
         options:
           alias: ['./lib/index.js:3vot-model']
-       
-      ajax: 
-        src: ['lib/ajax.js']
-        dest: 'dist/3ajax.js'
-        options:
-          alias: ["./lib/ajax.js:_3Ajax"]
-          external: ["3vot-model"]
 
     s3: 
       options: 
         key: 'AKIAJP5OIVAJN3XSMBPQ',
         secret: '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',
-        bucket: 'test.3vot.com',
+        bucket: 'dist.3vot.com',
         access: 'public-read',
         headers: 
           "Cache-Control": "max-age=0, public",
