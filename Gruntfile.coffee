@@ -46,8 +46,8 @@ module.exports = (grunt) ->
 
     s3: 
       options: 
-        key: 'AKIAJP5OIVAJN3XSMBPQ',
-        secret: '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',
+        key: '',
+        secret: '',
         bucket: 'dist.3vot.com',
         access: 'public-read',
         headers: 

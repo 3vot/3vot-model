@@ -31,7 +31,7 @@ class AjaxRequest
     options.url = options.url.replace(Model.host + "/", "")
     delete params.data?.id
 
-    vfCall = 'r2.ThreeVotApiController.handleRest'
+    vfCall = 'threevot.ThreeVotApiController.handleRest'
     
     fields = "{}"
     fields = JSON.stringify( params.data or "{}" ) if type == "put" or type == "post" 

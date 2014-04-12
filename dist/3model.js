@@ -1842,7 +1842,7 @@ module.exports=require('bRhrlU');
       if ((_ref = params.data) != null) {
         delete _ref.id;
       }
-      vfCall = 'r2.ThreeVotApiController.handleRest';
+      vfCall = 'threevot.ThreeVotApiController.handleRest';
       fields = "{}";
       if (type === "put" || type === "post") {
         fields = JSON.stringify(params.data || "{}");
