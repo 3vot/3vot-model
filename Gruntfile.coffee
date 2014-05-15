@@ -1,6 +1,8 @@
 module.exports = (grunt) ->
 
   grunt.initConfig
+  
+    aws: grunt.file.readJSON('./aws_key.json')
 
     clean:
       source: ['./lib/*.js']
@@ -46,8 +48,8 @@ module.exports = (grunt) ->
 
     s3: 
       options: 
-        key: '',
-        secret: '',
+        key: '<%= aws.key %>',
+        secret: '<%= aws.secret %>',
         bucket: 'dist.3vot.com',
         access: 'public-read',
         headers: 

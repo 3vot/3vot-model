@@ -26,7 +26,7 @@ class Model extends Module
     throw new Error("\"#{@className}\" model could not find a record for the ID \"#{id}\"") unless record
     return record
 
-  @exists: (id) ->
+  @exists: (id) ->  
     @irecords[id]?.clone()
 
   @addRecord: (record) ->
@@ -126,10 +126,16 @@ class Model extends Module
   @fromForm: ->
     (new this).fromForm(arguments...)
 
+
+  @escapeSingleQuotes: (str) ->
+    str = str.replace /'/g, "\\'"
+
   @sort: ->
     if @comparator
       @records.sort @comparator
     this
+
+
 
   # Private
 

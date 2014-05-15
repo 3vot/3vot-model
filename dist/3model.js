@@ -1240,6 +1240,10 @@ module.exports=require('bRhrlU');
       return (_ref = new this).fromForm.apply(_ref, arguments);
     };
 
+    Model.escapeSingleQuotes = function(str) {
+      return str = str.replace(/'/g, "\\'");
+    };
+
     Model.sort = function() {
       if (this.comparator) {
         this.records.sort(this.comparator);
@@ -1838,7 +1842,7 @@ module.exports=require('bRhrlU');
       if (this.enabled === false) {
         return this.promise;
       }
-      options.url = options.url.replace(Model.host + "/", "");
+      options.url = options.url.replace(Model.host + "/", "/");
       if ((_ref = params.data) != null) {
         delete _ref.id;
       }
