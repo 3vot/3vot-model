@@ -15,7 +15,9 @@ If you need guidance for more advanced coding patterns and structures
 and can’t find it here yet, you can refer to Spine.js documentation, or
 send us an e-mail, to which we’ll be happy to answer. 
 
-For a web version, go to http://docs.clayforsalesforce.com.
+<p>For a web version, go to http://docs.clayforsalesforce.com.  <br /></p>
+  
+  
 
 
 **Directory structure of the model app**
@@ -34,7 +36,7 @@ For a web version, go to http://docs.clayforsalesforce.com.
 
 |  |-views
 
-|-node\_modules
+|-node_modules
 
 |  |-3vot
 
@@ -81,7 +83,7 @@ and controllers to be used and initialized, as well as making initial
 data requests to Salesforce.
 
 
-**Node\_modules** is the directory for your dependencies (not showing
+**Node_modules** is the directory for your dependencies (not showing
 expanded), which are defined on the package.json file on the root of
 your app folder. By default, Clay requires 3VOT, 3VOT-Model and
 Jqueryify packages. To install dependencies for your app, see below
@@ -133,17 +135,15 @@ required within an app. ex: 3vot-model";
 
 
 
+<p><br /></p>
 **3VOT-Model MVC specifics**
-
 
 
 **Models **
 
 Models should be the viewed only as a connector to Salesforce, and
 should not include other logics, such as controller logic. Inside the
-Model file you should only declare the model and the fields required, 
-HYPERLINK "http://nodejs.org/api/modules.html" \\l
-"modules\_module\_exports" and then export it to be required by the
+Model file you should only declare the model and the fields required, and then export it to be required by the
 controllers.
 
 Model data is obtained through Ajax connection to Salesforce.
@@ -158,7 +158,7 @@ Controller.
 Hence, it’s necessary to initiate it, by requiring 3vot-model on your
 model file.
 
-var \_3Model = require("3vot-model");
+```var _3Model = require("3vot-model");```
 
 
 
@@ -166,8 +166,8 @@ After that, we have to create a model, which is done by subclassing the
 3vot-model Model object through the setup method, passing the desired
 model name (string) and the desired attributes:
 
-NewModel = \_3Model.Model.*setup*("ModelName", “attribute1”, “attribute
-2”, …, “attribute n”);
+```NewModel = _3Model.Model.*setup*("ModelName", “attribute1”, “attribute
+2”, …, “attribute n”);```
 
 
 
@@ -177,16 +177,13 @@ This Model is a constructor for new instances of the model.
 
 For better standards, we advise on the following code structure:
 
+
 //Declare the desired attributes inside an array
-
-var fields = [“attribute1”, “attribute 2”, …, “attribute n”];
-
-
-
+```var fields = [“attribute1”, “attribute 2”, …, “attribute n”]; ```
+ 
 //Create the Model
 
-NewModel = \_3Model.Model.*setup*("ModelName", fields);
-
+```NewModel = _3Model.Model.*setup*("ModelName", fields);```
 
 
 **Methods and classes can be added to the model.**
@@ -196,6 +193,7 @@ NewModel = \_3Model.Model.*setup*("ModelName", fields);
 Use the extend method for adding/overriding class methods, and the
 include method to add/override instance methods.
 
+```
 NewModel.extend({
 
   find: function(){
@@ -221,8 +219,8 @@ NewModel.include({
 
 
 ((new NewModel).name === "Default Name" ); //returns true
+```
 
-\
 
 **New Model Instances and Classes**
 
@@ -233,7 +231,7 @@ new:
 
 
 
-var model = new Model({object\_attributes: “optional”});
+```var model = new Model({object_attributes: “optional”});```
 
 
 
@@ -241,7 +239,7 @@ You can also use the Model.create method:
 
 
 
-var model = Model.create({object\_attributes: “optional”});
+```var model = Model.create({object_attributes: “optional”});```
 
 
 
@@ -250,13 +248,13 @@ var model = Model.create({object\_attributes: “optional”});
 To add classes to Models, use the Model.setup method:
 
 
-
-NewModel = \_3Model.Model.setup("NewModel", fields);
+```
+NewModel = _3Model.Model.setup("NewModel", fields);
 
 
 
 NewModel.Setup(“NewModelName”);
-
+```
 
 
 Saving and Retrieving Objects
@@ -269,23 +267,23 @@ Saving and Retrieving Objects
 
 
 Saving and updating
-
-var \_3Model = require("3vot-model") //requiring npm package
+```
+var _3Model = require("3vot-model") //requiring npm package
 
 var fields = ["Name","Type", "Website"] // declaring the fields
 
-Account = \_3Model.Model.setup("Account", fields); // creating the
+Account = _3Model.Model.setup("Account", fields); // creating the
 account Model
 
 
 
-var account = new Account({first\_name: “John”, last\_name: “Smith”});
+var account = new Account({first_name: “John”, last_name: “Smith”});
 //Account.create(); can be used aswell
 
 
 
 account.save(); //Saves the object in Salesforce.
-
+```
 
 
 When you save the instance, an id property is created for the object if
@@ -296,8 +294,8 @@ one isn’t created already. 
 If you change a property, use the same method to update the model.
 
 
-
-account.last\_name  = “Doe”;
+```
+account.last_name  = “Doe”;
 
 
 
@@ -305,8 +303,8 @@ account.save(); //
 
 
 
-account; // {first\_name: “John”, last\_name: “Doe”}
-
+account; // {first_name: “John”, last_name: “Doe”}
+```
 Retrieving Records
 
 
@@ -319,7 +317,7 @@ Model Methods to retrieve matching instances: 
 
 .all(), ex: Account.all()
 
-.splice(start\_position(integer, optional), ex: Account.splice(10); /
+.splice(start_position(integer, optional), ex: Account.splice(10); /
 Account.splice(2,6);
 
 .each(CallbackFunction()) – the function should be returning
@@ -328,26 +326,26 @@ account.firstname; This iterates every record on the model, and returns
 their disered property values
 
 ex: 
-
+```
 Account.each(CallbackFunction(account) {
 
-  return account.first\_name;
+  return account.first_name;
 
 });
-
+```
 
 
 .select(function()) – will select the instances that have the property
 you 
 
 ex:
-
+```
 Account.select(function(account) {
 
-  return account.first\_name;
+  return account.first_name;
 
 });
-
+```
 
 
 
@@ -361,7 +359,7 @@ Model.bind method, callbacks will be automatically associated.
 
 
 
-Use: Model.bind(“event”,callbackFunction());
+Use: ```Model.bind(“event”,callbackFunction());```
 
  
 
@@ -384,7 +382,7 @@ error - validation failed
 
  
 
-ex: PartyGuests.bind(“create”,buyMoreBooze());
+ex: ```PartyGuests.bind(“create”,buyMoreBooze());```
 
 
 
@@ -398,7 +396,7 @@ events.
 You can use the Model.listenTo method to have objects waiting for events
 on other objects. Use Model.listenTo(object,”event”,callbackFunction());
 ex:
-Invites.listenTo(PartyGuests,”create”,sendInvitationEmail(newPartyGuest));
+```Invites.listenTo(PartyGuests,”create”,sendInvitationEmail(newPartyGuest));```
 
 
 
@@ -429,13 +427,13 @@ property. El represents the current controller's HTML element, and is
 instantiated when the former is first created. You can attribute el to
 CSS classes or HTML tags. You assign the el object property as argument
 when instanciating, or later:
-
+```
 var contacts = Contact.create({el: \$(“div\>li”)}); //JQuery selector
 
 var Contact.el = \$(".contact-list"); 
 
 var Contact.el = \$("\#contactThingy");
-
+```
 
 The el property should be attached to a html tag, which is stored on the
 Model’s tag property. By default it’s set to “div”, but you can change
@@ -443,7 +441,7 @@ it:
 
 
 
-var Contact.tag = “li”;
+```var Contact.tag = “li”;```
 
 
 
@@ -468,7 +466,7 @@ events will be delegated to any of el's children matching the selector.
 
 
 
-Controller.html(html)
+```Controller.html(html);```
 
 
 
@@ -477,7 +475,7 @@ jQuery element, or another controller instance. 
 
 
 
-Controller.append(elementOrController)
+```Controller.append(elementOrController);```
 
 
 
@@ -485,7 +483,7 @@ Appends the given element, or controller instance, to el property. 
 
 
 
-Controller.appendTo(elementOrController)
+```Controller.appendTo(elementOrController);```
 
 
 
@@ -493,7 +491,7 @@ Appends el property to the given element or controller instance.
 
 
 
-Controller.prepend(elementOrController)
+```Controller.prepend(elementOrController);```
 
 
 
@@ -501,7 +499,7 @@ Prepends el to the given element or controller instance.
 
 
 
-replace(element)
+```replace(element);```
 
 
 
@@ -529,7 +527,7 @@ instances to fill the assigned el elements, passing them to the html.
 Like so:
 
 
-
+```
 render: function(){
 
   var accounts = Account.all();
@@ -549,7 +547,7 @@ template as a string
 html.
 
 }
-
+```
 
 
 For more info, you should refer to the website for more information on
@@ -585,10 +583,10 @@ template, respectively.
 An exemple for a Salesforce contact list template view:
 
 
-
+```
 \<li class="list-group-item contact-item"\>
 
-  \<span data-id="\<%= @id %\>" class="editable btn\_edit"\>
+  \<span data-id="\<%= @id %\>" class="editable btn_edit"\>
 
     \<%= @Name %\>
 
@@ -596,10 +594,10 @@ An exemple for a Salesforce contact list template view:
 
   \</span\>
 
-  \<span class="badge btn\_delete" data-id="\<%= @id %\>"\>x\</span\>
+  \<span class="badge btn_delete" data-id="\<%= @id %\>"\>x\</span\>
 
 \</li\>
-
+```
 
 
 If you need to use JQuery to manipulate your templates DOM, just use a
