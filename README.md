@@ -21,7 +21,7 @@ For a web version, go to http://docs.clayforsalesforce.com.
 **Directory structure of the model app**
 
 
-
+```
 |-app
 
 |-assets
@@ -59,7 +59,7 @@ For a web version, go to http://docs.clayforsalesforce.com.
 |  |-layout.html
 
 |-package.json
-
+```
 
 
 **App folder** is where the compiled app goes. Don’t edit the files in
