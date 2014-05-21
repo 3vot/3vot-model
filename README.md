@@ -9,19 +9,16 @@ Spine.js Framework integrates class support for Javascript, as
 internally it uses CoffeeScript classes, which can be used in 3vot Model
 aswell.
 
-\
+
 
 If you need guidance for more advanced coding patterns and structures
 and can’t find it here yet, you can refer to Spine.js documentation, or
 send us an e-mail, to which we’ll be happy to answer. 
 
-\
 
 **Directory structure of the model app**
 
-\
 
-\
 
 |-app
 
@@ -61,18 +58,18 @@ send us an e-mail, to which we’ll be happy to answer. 
 
 |-package.json
 
-\
+
 
 **App folder** is where the compiled app goes. Don’t edit the files in
 this folder. They will be overwritten everytime the app is compiled.
 (folder is not showing expanded).
 
-\
+
 
 **Assets folder** is where you put the assets for your app, such as
 images and stylesheets. It’s empty by default when the app is created.
 
-\
+
 
 **Code folder** is where you should put all your scripts files, such as
 the controllers, models and views files for the 3VOT Model. On the root
@@ -81,7 +78,6 @@ that gets called when the app starts and where you can define the models
 and controllers to be used and initialized, as well as making initial
 data requests to Salesforce.
 
-\
 
 **Node\_modules** is the directory for your dependencies (not showing
 expanded), which are defined on the package.json file on the root of
@@ -99,7 +95,7 @@ tablet.js is where you define the controllers and layouts for each of
 this platforms, and whether you need to login oAuth providers, define
 api tokens, etc.
 
-\
+
 
 **Templates folder** is where you have the head and layout html files
 for you app. If your app has different layouts for different platforms,
@@ -108,7 +104,7 @@ head.html you need not to include \<head\> or \<body\> tags, and while
 having different layouts, it’s not possible to change the head file for
 every one of them, it has to be the same.
 
-\
+
 
 Package.json file is where you define your dependencies and other
 compile options for your app:
@@ -131,13 +127,13 @@ required within an app. ex: Angular";
 "**dependencies**": "NPM Browser Compatible Dependencies that can be
 required within an app. ex: 3vot-model";
 
-\
 
-\
+
+
 
 **3VOT-Model MVC specifics**
 
-\
+
 
 **Models **
 
@@ -155,14 +151,14 @@ Model data is obtained through Ajax connection to Salesforce.
 3vot-model is an NPM Dependency that connects with Visualforce API
 Controller.
 
-\
+
 
 Hence, it’s necessary to initiate it, by requiring 3vot-model on your
 model file.
 
 var \_3Model = require("3vot-model");
 
-\
+
 
 After that, we have to create a model, which is done by subclassing the
 3vot-model Model object through the setup method, passing the desired
@@ -171,11 +167,11 @@ model name (string) and the desired attributes:
 NewModel = \_3Model.Model.*setup*("ModelName", “attribute1”, “attribute
 2”, …, “attribute n”);
 
-\
+
 
 This Model is a constructor for new instances of the model.
 
-\
+
 
 For better standards, we advise on the following code structure:
 
@@ -183,17 +179,17 @@ For better standards, we advise on the following code structure:
 
 var fields = [“attribute1”, “attribute 2”, …, “attribute n”];
 
-\
+
 
 //Create the Model
 
 NewModel = \_3Model.Model.*setup*("ModelName", fields);
 
-\
+
 
 **Methods and classes can be added to the model.**
 
-\
+
 
 Use the extend method for adding/overriding class methods, and the
 include method to add/override instance methods.
@@ -208,11 +204,11 @@ NewModel.extend({
 
 });
 
-\
+
 
 NewModel.find(); //calling the new method 
 
-\
+
 
 NewModel.include({
 
@@ -220,7 +216,7 @@ NewModel.include({
 
 });
 
-\
+
 
 ((new NewModel).name === "Default Name" ); //returns true
 
@@ -228,50 +224,47 @@ NewModel.include({
 
 **New Model Instances and Classes**
 
-\
+
 
 You can create new Model instances using the constructor method, via
 new:
 
-\
+
 
 var model = new Model({object\_attributes: “optional”});
 
-\
 
-You can also utilize the Model.create method:
 
-\
+You can also use the Model.create method:
+
+
 
 var model = Model.create({object\_attributes: “optional”});
 
-\
 
-\
+
+
 
 To add classes to Models, use the Model.setup method:
 
-\
+
 
 NewModel = \_3Model.Model.setup("NewModel", fields);
 
-\
+
 
 NewModel.Setup(“NewModelName”);
 
-\
+
 
 Saving and Retrieving Objects
 
-\
 
-\
 
-\
 
 **Saving and retrieving records**
 
-\
+
 
 Saving and updating
 
@@ -282,39 +275,39 @@ var fields = ["Name","Type", "Website"] // declaring the fields
 Account = \_3Model.Model.setup("Account", fields); // creating the
 account Model
 
-\
+
 
 var account = new Account({first\_name: “John”, last\_name: “Smith”});
 //Account.create(); can be used aswell
 
-\
+
 
 account.save(); //Saves the object in Salesforce.
 
-\
+
 
 When you save the instance, an id property is created for the object if
 one isn’t created already. 
 
-\
+
 
 If you change a property, use the same method to update the model.
 
-\
+
 
 account.last\_name  = “Doe”;
 
-\
+
 
 account.save(); //
 
-\
+
 
 account; // {first\_name: “John”, last\_name: “Doe”}
 
 Retrieving Records
 
-\
+
 
 Model Methods to retrieve matching instances: 
 
@@ -340,7 +333,7 @@ Account.each(CallbackFunction(account) {
 
 });
 
-\
+
 
 .select(function()) – will select the instances that have the property
 you 
@@ -353,9 +346,9 @@ Account.select(function(account) {
 
 });
 
-\
 
-\
+
+
 
 **EVENTS**
 
@@ -364,7 +357,7 @@ Account.select(function(account) {
 It’s easy to implement callback functions on Model events. Using the
 Model.bind method, callbacks will be automatically associated.
 
-\
+
 
 Use: Model.bind(“event”,callbackFunction());
 
@@ -391,44 +384,43 @@ error - validation failed
 
 ex: PartyGuests.bind(“create”,buyMoreBooze());
 
-\
+
 
 You can trigger events manually with the Model.trigger method, passing
 as arguments the event and the arguments required for the callback
 function thats going to be executed. You can use this to create custom
 events.
 
-\
+
 
 You can use the Model.listenTo method to have objects waiting for events
 on other objects. Use Model.listenTo(object,”event”,callbackFunction());
 ex:
 Invites.listenTo(PartyGuests,”create”,sendInvitationEmail(newPartyGuest));
 
-\
+
 
 Model.ListenToOnce will be listening for the next time the event occurs,
 and only that one. Same arguments as the previous model.
 
-\
+
 
 Events can be unbind using Model.unbind method.
 
 For deeper incursion on the SpineJs Models:
 http://spinejs.com/api/models
 
-\
 
-\
+
 
 **Controllers**
 
-\
+
 
 Generally, controllers deal with adding and responding to DOM events,
 rendering templates and keeping views and models in sync.
 
-\
+
 
 To connect to the DOM objects, 3vot Model, like Spine, uses the el
 property. El represents the current controller's HTML element, and is
@@ -442,17 +434,16 @@ var Contact.el = \$(".contact-list"); 
 
 var Contact.el = \$("\#contactThingy");
 
-\
 
 The el property should be attached to a html tag, which is stored on the
 Model’s tag property. By default it’s set to “div”, but you can change
 it:
 
-\
+
 
 var Contact.tag = “li”;
 
-\
+
 
 **3Vot Model has events on controllers too**
 
@@ -463,9 +454,9 @@ following format: {"eventType selector": "functionName"}. If no selector
 is provided, then the event will be set directly on el. Otherwise the
 events will be delegated to any of el's children matching the selector.
 
-\
 
-\
+
+
 
 **Model methods apply to controllers as well.**
 
@@ -473,69 +464,69 @@ events will be delegated to any of el's children matching the selector.
 
 **Controller methods which change el and elements property.**
 
-\
+
 
 Controller.html(html)
 
-\
+
 
 Replaces el's property’s html by passing in either a piece of HTML, a
 jQuery element, or another controller instance. 
 
-\
+
 
 Controller.append(elementOrController)
 
-\
+
 
 Appends the given element, or controller instance, to el property. 
 
-\
+
 
 Controller.appendTo(elementOrController)
 
-\
+
 
 Appends el property to the given element or controller instance.
 
-\
+
 
 Controller.prepend(elementOrController)
 
-\
+
 
 Prepends el to the given element or controller instance.
 
-\
+
 
 replace(element)
 
-\
+
 
 Replaces el’s current value with the given element.
 
-\
+
 
 **Views / Templates**
 
-\
+
 
 Views are defined through small html templates that get dinamically
 rendered and refreshed.
 
-\
+
 
 3vot Model uses  HYPERLINK "https://github.com/sstephenson/eco" Eco:
 Embedded CoffeeScript templates for its ease of use and
 integration/versatility, compiling the templates via node.js.
 
-\
+
 
 To compile the views, you have to require it and than pass it the Model
 instances to fill the assigned el elements, passing them to the html.
 Like so:
 
-\
+
 
 render: function(){
 
@@ -557,13 +548,13 @@ html.
 
 }
 
-\
+
 
 For more info, you should refer to the website for more information on
 the use, but here are a few importante directions on integrating it on
 .eco template files:
 
-\
+
 
 \<% expression %\>: Evaluate a CoffeeScript expression without printing
 its return value.
@@ -587,11 +578,11 @@ and return the content ... inside the tag.
 \<%% and %%\> will result in a literal \<% and %\> in the rendered
 template, respectively.
 
-\
+
 
 An exemple for a Salesforce contact list template view:
 
-\
+
 
 \<li class="list-group-item contact-item"\>
 
@@ -607,7 +598,7 @@ An exemple for a Salesforce contact list template view:
 
 \</li\>
 
-\
+
 
 If you need to use JQuery to manipulate your templates DOM, just use a
 .jeco extension for your template file instead of .eco.
