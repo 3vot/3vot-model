@@ -15,6 +15,8 @@ If you need guidance for more advanced coding patterns and structures
 and can’t find it here yet, you can refer to Spine.js documentation, or
 send us an e-mail, to which we’ll be happy to answer. 
 
+For a web version, go to http://docs.clayforsalesforce.com.
+
 
 **Directory structure of the model app**
 
@@ -85,7 +87,7 @@ your app folder. By default, Clay requires 3VOT, 3VOT-Model and
 Jqueryify packages. To install dependencies for your app, see below
 reference for package.json file.
 
-\
+
 
 **Start folder** is where you setup how you want your app to show in
 each platform. 
@@ -352,7 +354,7 @@ Account.select(function(account) {
 
 **EVENTS**
 
-****\
+
 
 It’s easy to implement callback functions on Model events. Using the
 Model.bind method, callbacks will be automatically associated.
@@ -447,7 +449,7 @@ var Contact.tag = “li”;
 
 **3Vot Model has events on controllers too**
 
-****\
+
 
 Just set the events property to an array of object literals, in the
 following format: {"eventType selector": "functionName"}. If no selector
@@ -460,7 +462,7 @@ events will be delegated to any of el's children matching the selector.
 
 **Model methods apply to controllers as well.**
 
-****\
+
 
 **Controller methods which change el and elements property.**
 
