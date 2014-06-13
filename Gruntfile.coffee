@@ -42,7 +42,7 @@ module.exports = (grunt) ->
     browserify:
       basic: 
         src: ['lib/index.js']
-        dest: 'dist/3model.js'
+        dest: 'dist/3model.v1.js'
         options:
           alias: ['./lib/index.js:3vot-model']
 

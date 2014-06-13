@@ -4,7 +4,7 @@ Collection = require("./ajax_collection")
 Singleton = require("./ajax_singleton")
 Action = require("./ajax_action")
 Query = require("./ajax_query")
-
+SalesforceRest = require("./ajax_salesforcerest")
 View = require("./ajax_view")
 
 ajax_request = require("./ajax_request")
@@ -19,6 +19,7 @@ Include =
 Extend =
   ajax: -> new Collection(this)
   view: -> new View(this)
+  salesforceRest: -> new SalesforceRest(this)
   action: -> new Action(this)
   queryManager: -> new Query(this)
     
@@ -31,6 +32,7 @@ Ajax =
     @fetch @ajaxFetch
     @change @ajaxChange
     @query = @ajaxQuery
+    @rest = @callSalesforceRest
     @extend Extend
     @include Include
     
@@ -42,6 +44,9 @@ Ajax =
 
   callAction: ->
     @action().call(arguments...)
+
+  callSalesforceRest: ->
+    @salesforceRest().call(arguments...)
 
   callView: ->
     @view().call(arguments...)

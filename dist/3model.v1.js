@@ -61,6 +61,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
       this.fetch(this.ajaxFetch);
       this.change(this.ajaxChange);
       this.query = this.ajaxQuery;
+      this.rest = this.callSalesforceRest;
       this.extend(Extend);
       return this.include(Include);
     },
@@ -72,9 +73,9 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
       var _ref;
       return (_ref = this.action()).call.apply(_ref, arguments);
     },
-    salesforceRest: function() {
+    callSalesforceRest: function() {
       var _ref;
-      return (_ref = this.salesforceRest).call.apply(_ref, arguments);
+      return (_ref = this.salesforceRest()).call.apply(_ref, arguments);
     },
     callView: function() {
       var _ref;
