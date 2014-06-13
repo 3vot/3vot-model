@@ -46,7 +46,7 @@ class AjaxRequest
             return callback("Null return from action method")
 
           result = JSON.parse(result)
-          if ( Array.isArray(result) && result[0].message && result[0].errorCode ) then return callback( result[0].message )
+          if ( Array.isArray(result) && result.length > 0 && result[0].message && result[0].errorCode ) then return callback( result[0].message )
           if ( result && result.message && result.errorCode ) then return callback( result[0].message )
 
           delete result.errors if result
