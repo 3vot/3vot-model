@@ -1,6 +1,11 @@
 AjaxUtils = require("./ajax_utils")
 Model  = require('./model')
 
+if typeof threevot == 'undefined'
+  window.threevot = {}
+  threevot.ThreeVotApiController = ThreeVotApiController;
+
+
 class AjaxRequest
 
   @promise=

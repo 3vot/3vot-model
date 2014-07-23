@@ -1860,6 +1860,11 @@ module.exports=require('bRhrlU');
 
   Model = require('./model');
 
+  if (typeof threevot === 'undefined') {
+    window.threevot = {};
+    threevot.ThreeVotApiController = ThreeVotApiController;
+  }
+
   AjaxRequest = (function() {
     function AjaxRequest() {}
 
