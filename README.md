@@ -1,4 +1,4 @@
-**Documentation**
+# Documentation
 
 Clay uses an MVC framework to build Javascript web applications that
 fully communicate and integrate with Salesforce. This framework is the
@@ -17,7 +17,9 @@ send us an e-mail, to which we’ll be happy to answer. 
 
 <p>For a web version, go to http://clayforsalesforce.com.  <br /></p>
   
-
+# Clay for Salesforce
+When using 3VOT Model with with Clay and Salesforce this is the Salesforce Package:
+https://github.com/3vot/clayforsalesforce
 
 Class methods
 
