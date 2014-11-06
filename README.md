@@ -1,3 +1,8 @@
+THIS REPOSITORY IS NOT BEING MANTAINED
+
+USE [https://github.com/3vot/clay-model](Clay Model instead with Promise Support)
+
+
 # Documentation
 
 Clay uses an MVC framework to build Javascript web applications that
